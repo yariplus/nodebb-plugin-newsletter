@@ -1,0 +1,21 @@
+{
+    "id": "nodebb-plugin-newsletter",
+    "name": "NodeBB Plugin Newsletter",
+    "description": "Send an email newsletter to all users or a group of users.",
+    "url": "https://github.com/yariplus/nodebb-plugin-newsletter",
+    "staticDirs": {
+        "public": "./public"
+    },
+    "scripts": [
+        "public/js/client.js"
+    ],
+    "less": [
+        "public/less/style.less"
+    ],
+    "library": "./library.js",
+    "hooks": [
+        { "hook": "static:app.load", "method": "load" },
+        { "hook": "filter:admin.header.build", "method": "adminHeader" }
+    ],
+    "templates": "./public/templates"
+}
