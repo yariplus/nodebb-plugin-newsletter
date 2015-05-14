@@ -8,7 +8,7 @@ define('admin/plugins/newsletter', function () {
 			e.preventDefault();
 			socket.emit('plugins.Newsletter.send', {
 				subject: $('#newsletter-subject').val(),
-				template: $('#newsletter-template').val(),
+				template: $('#newsletter-preview').html(),
 				group: $('#newsletter-group').val()
 			}, function (success) {
 				if (success) {
@@ -26,6 +26,32 @@ define('admin/plugins/newsletter', function () {
 				}
 			});
 		});
+
+		function render() {
+			if (Newsletter.timeoutId) {
+				clearTimeout(Newsletter.timeoutId);
+				Newsletter.timeoutId = 0;
+			}
+			var textarea = $('#newsletter-template');
+
+			Newsletter.timeoutId = setTimeout(function() {
+				socket.emit('modules.composer.renderPreview', textarea.val(), function(err, preview) {
+					timeoutId = 0;
+					if (err) {
+						return;
+					}
+					preview = $(preview);
+					preview.find('img').addClass('img-responsive');
+					$('#newsletter-preview').html(preview);
+				});
+			}, 250);
+		}
+
+		$('#newsletter-template').on('input', function (e) {
+			render();
+		});
+
+		render();
 	};
 
 	return Newsletter;

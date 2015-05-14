@@ -5,7 +5,7 @@
         <input class="form-control" id="newsletter-subject" type="text"/>
     </div>
     <div class="form-group">
-        <label class="form-label" for="newsletter-template">Body</label><span> ( You can use &#123;username&#125; )</span>
+        <label class="form-label" for="newsletter-template">Body</label><span> ( Parsed as a Post, and you can use &#123;username&#125; )</span>
         <textarea class="form-control" id="newsletter-template"></textarea>
     </div>
     <div class="form-group">
@@ -22,4 +22,7 @@
     <div class="form-group">
         <button class="btn btn-success" type="button" id="newsletter-send"><i class="fa fa-fw fa-newspaper-o"></i> Send Newsletter</input>
     </div>
+    <br>
+    <h3>Preview</h3>
+    <div id="newsletter-preview"></div>
 </form>
