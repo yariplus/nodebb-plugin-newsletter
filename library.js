@@ -10,6 +10,7 @@
 		Emailer    = nbb.require('./emailer'),
 		User       = nbb.require('./user'),
 		Groups     = nbb.require('./groups'),
+		Plugins    = nbb.require('./plugins'),
 		SioPlugins = nbb.require('./socket.io/plugins');
 
 	Newsletter.load = function (data, callback) {
@@ -30,13 +31,27 @@
 		}
 
 		function render (req, res, next) {
-			//db.getSortedSetRange('groups:createtime', 0, -1, function (err, groups) {
-				Groups.list({ }, function (err, data) {
-					var groups = [ ];
-					for (var i in data) groups.push({name: data[i].name});
-					res.render('admin/plugins/newsletter', {groups: groups});
-				});
-			//});
+			async.parallel({
+				groups: function(next) {
+					Groups.list({ }, function (err, data) {
+						var groups = [ ];
+						for (var i in data) groups.push({name: data[i].name});
+						next(err, groups);
+					});
+				},
+				formatting: function (next) {
+					Plugins.fireHook('filter:composer.formatting', {
+						options: [
+							{ name: 'tags', className: 'fa fa-tags', mobile: true }
+						]
+					}, function (err, payload) {
+						next(err, payload.options);
+					});
+				}
+			},
+			function (err, payload) {
+				res.render('admin/plugins/newsletter', payload);
+			});
 		}
 
 		NodeBB.router.get('/admin/plugins/newsletter', NodeBB.middleware.admin.buildHeader, render);

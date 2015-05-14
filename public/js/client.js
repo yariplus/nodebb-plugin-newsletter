@@ -57,6 +57,13 @@ define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview'], 
 		});
 
 		render();
+		formatting.addHandler($('#newsletter'));
+
+		// Query server for formatting options
+		// socket.emit('modules.composer.getFormattingOptions', function(err, options) {
+			// composer.formatting = options;
+		// });
+		formatting.addComposerButtons($('#newsletter'));
 	};
 
 	return Newsletter;
