@@ -9,11 +9,17 @@
     <div class="row">
         <div class="form-group col-md-6">
             <label class="form-label" for="newsletter-template">Body</label><span> ( Parsed as a Post, and you can use &#123;username&#125; )</span>
-            <textarea class="form-control" id="newsletter-template"></textarea>
         </div>
         <div class="form-group col-md-6">
             <label class="form-label" for="newsletter-preview">Preview</label>
-            <div class="form-control" id="newsletter-preview"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <textarea class="form-control" id="newsletter-template"></textarea>
+        </div>
+        <div class="form-group col-md-6">
+            <div class="form-control preview" id="newsletter-preview"></div>
         </div>
     </div>
     <div class="row">

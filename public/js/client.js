@@ -1,6 +1,6 @@
 "use strict";
 
-define('admin/plugins/newsletter', function () {
+define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview'], function (formatting, preview) {
 	var Newsletter = { };
 
 	Newsletter.init = function () {
@@ -35,20 +35,25 @@ define('admin/plugins/newsletter', function () {
 			var textarea = $('#newsletter-template');
 
 			Newsletter.timeoutId = setTimeout(function() {
-				socket.emit('modules.composer.renderPreview', textarea.val(), function(err, preview) {
+				socket.emit('modules.composer.renderPreview', textarea.val(), function(err, $preview) {
 					timeoutId = 0;
 					if (err) {
 						return;
 					}
-					preview = $(preview);
-					preview.find('img').addClass('img-responsive');
-					$('#newsletter-preview').html(preview);
+					$preview = $($preview);
+					$preview.find('img').addClass('img-responsive');
+					$('#newsletter-preview').html($preview);
+					preview.matchScroll($('#newsletter'));
 				});
 			}, 250);
 		}
 
 		$('#newsletter-template').on('input', function (e) {
 			render();
+		});
+
+		$('#newsletter-template').on('scroll', function (e) {
+			preview.matchScroll($('#newsletter'));
 		});
 
 		render();
