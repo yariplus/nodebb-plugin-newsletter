@@ -1,4 +1,4 @@
-<form id="audio-control" class="col-lg-9 col-md-12">
+<form id="newsletter" class="col-lg-12 col-md-12">
     <h1><i class="fa fa-fw fa-newspaper-o"></i>Newsletter</h1>
     <div class="form-group">
         <label class="form-label" for="newsletter-subject">Subject</label>
