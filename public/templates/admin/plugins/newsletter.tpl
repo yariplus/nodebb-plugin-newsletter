@@ -27,6 +27,9 @@
             <span class="btn btn-link img-upload-btn hide" data-format="picture" tabindex="-1">
                 <i class="fa fa-picture-o"></i>
             </span>
+            <span class="btn btn-link file-upload-btn hide" data-format="upload" tabindex="-1">
+                <i class="fa fa-upload"></i>
+            </span>
             <form id="fileForm" method="post" enctype="multipart/form-data">
                 <input type="file" id="files" name="files[]" multiple class="gte-ie9 hide"/>
             </form>

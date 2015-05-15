@@ -4,6 +4,8 @@ define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview', '
 	var Newsletter = { };
 
 	Newsletter.init = function () {
+		var $newsletter = $('#newsletter');
+
 		$('#newsletter-send').click(function (e) {
 			e.preventDefault();
 			socket.emit('plugins.Newsletter.send', {
@@ -43,7 +45,7 @@ define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview', '
 					$preview = $($preview);
 					$preview.find('img').addClass('img-responsive');
 					$('#newsletter-preview').html($preview);
-					preview.matchScroll($('#newsletter'));
+					preview.matchScroll($newsletter);
 				});
 			}, 250);
 		}
@@ -53,16 +55,21 @@ define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview', '
 		});
 
 		$('#newsletter-template').on('scroll', function (e) {
-			preview.matchScroll($('#newsletter'));
+			preview.matchScroll($newsletter);
 		});
 
 		render();
-		formatting.addHandler($('#newsletter'));
-		formatting.addComposerButtons($('#newsletter'));
+		formatting.addHandler($newsletter);
+		formatting.addComposerButtons($newsletter);
 
 		if (config.hasImageUploadPlugin) {
-			$('#newsletter').find('.img-upload-btn').removeClass('hide');
-			$('#newsletter').find('#files.lt-ie9').removeClass('hide');
+			$newsletter.find('.img-upload-btn').removeClass('hide');
+			$newsletter.find('#files.lt-ie9').removeClass('hide');
+		}
+
+		if (config.allowFileUploads) {
+			$newsletter.find('.file-upload-btn').removeClass('hide');
+			$newsletter.find('#files.lt-ie9').removeClass('hide');
 		}
 
 		uploads.initialize("newsletter");
