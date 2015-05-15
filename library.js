@@ -5,11 +5,13 @@
 	var Newsletter = { },
 		async      = require('async'),
 		winston    = require('winston'),
+		nconf      = require('nconf'),
 		NodeBB     = { },
 		db         = nbb.require('./database'),
 		Emailer    = nbb.require('./emailer'),
 		User       = nbb.require('./user'),
 		Groups     = nbb.require('./groups'),
+		Meta       = nbb.require('./meta'),
 		Plugins    = nbb.require('./plugins'),
 		SioPlugins = nbb.require('./socket.io/plugins');
 
@@ -81,16 +83,21 @@
 							User.getMultipleUserFields(uids, ['uid', 'username', 'banned'], next);
 						},
 						function (users, next) {
-							winston.info('[Newsletter] Sending email newsletter to '+users.length+' users: ');
-							async.eachLimit(users, 100, function (userObj, next) {
-								if (parseInt(userObj.banned, 10) === 1) return next();
-								Emailer.send('newsletter', userObj.uid, {
-									subject: data.subject,
-									username: userObj.username,
-									body: data.template.replace('{username}', userObj.username)
-								});
-								return next();
-							}, next);
+							Meta.configs.get('title', function(err, title){
+								if (err) return next(err);
+								winston.info('[Newsletter] Sending email newsletter to '+users.length+' users: ');
+								async.eachLimit(users, 100, function (userObj, next) {
+									if (parseInt(userObj.banned, 10) === 1) return next();
+									Emailer.send('newsletter', userObj.uid, {
+										subject: data.subject,
+										username: userObj.username,
+										body: data.template.replace('{username}', userObj.username),
+										title: title,
+										url: nconf.get('url')
+									});
+									return next();
+								}, next);
+							});
 						}
 					], function (err, results) {
 						if (err) {
