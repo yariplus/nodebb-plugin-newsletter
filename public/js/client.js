@@ -1,6 +1,6 @@
 "use strict";
 
-define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview'], function (formatting, preview) {
+define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview', 'composer/uploads'], function (formatting, preview, uploads) {
 	var Newsletter = { };
 
 	Newsletter.init = function () {
@@ -58,12 +58,14 @@ define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview'], 
 
 		render();
 		formatting.addHandler($('#newsletter'));
-
-		// Query server for formatting options
-		// socket.emit('modules.composer.getFormattingOptions', function(err, options) {
-			// composer.formatting = options;
-		// });
 		formatting.addComposerButtons($('#newsletter'));
+
+		if (config.hasImageUploadPlugin) {
+			$('#newsletter').find('.img-upload-btn').removeClass('hide');
+			$('#newsletter').find('#files.lt-ie9').removeClass('hide');
+		}
+
+		uploads.initialize("newsletter");
 	};
 
 	return Newsletter;

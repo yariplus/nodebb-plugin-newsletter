@@ -1,4 +1,4 @@
-<div class="composer">
+<div class="composer" id="cmp-uuid-newsletter">
 <div id="newsletter">
     <h1><i class="fa fa-fw fa-newspaper-o"></i>Newsletter</h1>
     <div class="row">
@@ -24,7 +24,12 @@
                 <!-- ENDIF !formatting.mobile -->
                 <!-- ENDIF formatting.spacer -->
             <!-- END formatting -->
-            <form style="display:none;"></form>
+            <span class="btn btn-link img-upload-btn hide" data-format="picture" tabindex="-1">
+                <i class="fa fa-picture-o"></i>
+            </span>
+            <form id="fileForm" method="post" enctype="multipart/form-data">
+                <input type="file" id="files" name="files[]" multiple class="gte-ie9 hide"/>
+            </form>
         </div>
     </div>
     <div class="row">
