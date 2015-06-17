@@ -15,19 +15,12 @@
 		Plugins    = nbb.require('./plugins'),
 		SioPlugins = nbb.require('./socket.io/plugins');
 
-	Newsletter.load = function (data, callback) {
+	Newsletter.load = function (params, callback) {
 		// Delegate arguments
 		if (arguments.length === 2) {
-			// NodeBB version >=0.6.0
-			NodeBB.app = data.app;
-			NodeBB.router = data.router;
-			NodeBB.middleware = data.middleware;
-		}else if(arguments.length === 4 && typeof arguments[3] === 'function') {
-			// NodeBB version <=0.5.0
-			NodeBB.app = data;
-			NodeBB.router = data;
-			NodeBB.middleware = callback;
-			callback = arguments[3];
+			NodeBB.app = params.app;
+			NodeBB.router = params.router;
+			NodeBB.middleware = params.middleware;
 		}else{
 			return winston.info("[Newsletter] Failed to load plugin. Invalid arguments found for app.load(). Are you sure you're using a compatible version of NodeBB?");
 		}
@@ -35,10 +28,27 @@
 		function render (req, res, next) {
 			async.parallel({
 				groups: function(next) {
-					Groups.list({ }, function (err, data) {
-						var groups = [ ];
-						for (var i in data) groups.push({name: data[i].name});
-						next(err, groups);
+					Groups.getGroups(0, -1, function (err, groups) {
+						if (err) {
+							winston.warn("[Newsletter] Failed to load groups: " + err);
+							return next(err);
+						}
+						function groupsFilter(group, next) {
+							next(group.slice(0,3) !== 'cid' && group !== 'administrators' && group !== 'registered-users');
+						}
+						function groupsMap(group, next) {
+							next(null, {name: group});
+						}
+						async.waterfall([
+							function (next) {
+								async.filter(groups, groupsFilter, function (_groups) {
+									next(null, _groups);
+								});
+							},
+							function (_groups, next) {
+								async.map(_groups, groupsMap, next);
+							}
+						], next);
 					});
 				},
 				formatting: function (next) {
@@ -52,7 +62,11 @@
 				}
 			},
 			function (err, payload) {
-				res.render('admin/plugins/newsletter', payload);
+				if (!err) {
+					res.render('admin/plugins/newsletter', payload);
+				}else{
+					res.send("Error: " + err);
+				}
 			});
 		}
 
@@ -63,58 +77,98 @@
 		});
 
 		SioPlugins.Newsletter = { };
+
+		// The user clicked send on the Newsletter page.
 		SioPlugins.Newsletter.send = function (socket, data, callback) {
-			if (!socket.uid) {
-				return callback(false);
-			}
-			User.isAdministrator(socket.uid, function(err, isAdmin) {
-				if (!err && isAdmin) {
-					winston.info('[Newsletter] uid ' + socket.uid + ' sent a newsletter.');
+
+			// Do all the things.
+			async.waterfall([
+
+				// Make the user is an admin.
+				async.apply(User.isAdministrator, socket.uid),
+				function (isAdmin, next) {
+
+					// Do a warning if the user is not an admin.
+					if (isAdmin) {
+						winston.info('[Newsletter] uid ' + socket.uid + ' sent a newsletter.');
+					}else{
+						winston.warn('[socket.io] Call to admin method ( ' + 'plugins.Newsletter.send' + ' ) blocked (accessed by uid ' + socket.uid + ')');
+						return next(new Error("[[error:not_admin]]"));
+					}
+
+					// Set the correct group.
 					if (data.group === 'everyone') {
 						data.group = 'users:joindate';
 					}else{
 						data.group = 'group:' + data.group + ':members';
 					}
-					async.waterfall([
-						function (next) {
-							db.getSortedSetRange(data.group, 0, -1, next);
-						},
-						function (uids, next) {
-							User.getMultipleUserFields(uids, ['uid', 'username', 'banned'], next);
-						},
-						function (users, next) {
-							Meta.configs.get('title', function(err, title){
-								if (err) return next(err);
-								winston.info('[Newsletter] Sending email newsletter to '+users.length+' users: ');
-								async.eachLimit(users, 100, function (userObj, next) {
-									if (parseInt(userObj.banned, 10) === 1) return next();
-									Emailer.send('newsletter', userObj.uid, {
-										subject: data.subject,
-										username: userObj.username,
-										body: data.template.replace('{username}', userObj.username),
-										title: title,
-										url: nconf.get('url')
-									});
-									return next();
-								}, next);
-							});
-						}
-					], function (err, results) {
-						if (err) {
-							callback(false);
-							winston.warn('Error sending emails: ' + err);
-						}else{
-							callback(true);
-							winston.info('Done sending emails.');
-						}
+					winston.info('[Newsletter] Sending to group "' + data.group + '".');
+					return next();
+				},
+
+				// Get the users
+				function (next) {
+					db.getSortedSetRange(data.group, 0, -1, next);
+				},
+				// Why doesn't this work?
+				// async.apply(db.getSortedSetRange, data.group, 0, -1),
+				function (uids, next) {
+					console.log(uids);
+					next(null, uids, ['uid', 'email', 'username', 'banned']);
+				},
+				async.apply(User.getMultipleUserFields),
+
+				//
+				function (users, next) {
+
+					// Get the site Title.
+					Meta.configs.get('title', function(err, title){
+						if (err) return next(err);
+
+						// Send the emails.
+						winston.info('[Newsletter] Sending email newsletter to '+users.length+' users: ');
+						async.eachLimit(users, 100, function (userObj, next) {
+
+							// Check for nulls and warn.
+							if (!(!!userObj && !!userObj.uid && !!userObj.email && !!userObj.username)) {
+								winston.warn('[Newsletter] Null data at uid ' + userObj.uid + ', skipping.');
+								return next();
+							}
+
+							// Skip banned users silently.
+							if (parseInt(userObj.banned, 10) === 1) return next();
+
+							// Email options.
+							var options = {
+								subject: data.subject,
+								username: userObj.username,
+								body: data.template.replace('{username}', userObj.username),
+								title: title,
+								url: nconf.get('url')
+							};
+
+							// Send and go to next user. It will automagically wait if over 100 threads I think.
+							Emailer.send('newsletter', userObj.uid, options);
+							return next();
+
+							// We're done.
+						}, next);
 					});
-				} else {
-					winston.warn('[socket.io] Call to admin method ( ' + 'plugins.Newsletter.send' + ' ) blocked (accessed by uid ' + socket.uid + ')');
-					callback(false);
+				}
+			], function (err) {
+
+				// Returns true if there were no errors.
+				if (err) {
+					winston.warn('Error sending emails: ' + (err.message || err) );
+					return callback(false);
+				}else{
+					winston.info('[Newsletter] Done sending emails.');
+					return callback(true);
 				}
 			});
 		};
 
+		// End of app.load
 		callback();
 	};
 
