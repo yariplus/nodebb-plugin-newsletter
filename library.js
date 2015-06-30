@@ -132,11 +132,14 @@
 							// Check for nulls and warn.
 							if (!(!!userObj && !!userObj.uid && !!userObj.email && !!userObj.username)) {
 								winston.warn('[Newsletter] Null data at uid ' + userObj.uid + ', skipping.');
-								return next();
+								return next(null);
 							}
 
-							// Skip banned users silently.
-							if (parseInt(userObj.banned, 10) === 1) return next();
+							// Skip banned users and warn.
+							if (parseInt(userObj.banned, 10) === 1) {
+								winston.warn('[Newsletter] Banned user at uid ' + userObj.uid + ', skipping.');
+								return next(null);
+							}
 
 							// Email options.
 							var options = {
@@ -149,22 +152,28 @@
 
 							// Send and go to next user. It will automagically wait if over 100 threads I think.
 							Emailer.send('newsletter', userObj.uid, options);
-							return next();
+							winston.info('[Newsletter] Sent email newsletter to '+ userObj.uid);
+							return next(null);
 
 							// We're done.
-						}, next);
+						}, function (err) {
+							winston.info('[Newsletter] Finished email loop with error value: '+ typeof err + " "+ err);
+							next(err);
+						});
 					});
 				}
 			], function (err) {
+				winston.info('[Newsletter] Done sending emails.');
 
 				// Returns true if there were no errors.
 				if (err) {
-					winston.warn('Error sending emails: ' + (err.message || err) );
-					return callback(false);
+					winston.warn('[Newsletter] Error sending emails: ' + (err.message || err) );
+					callback(false);
 				}else{
-					winston.info('[Newsletter] Done sending emails.');
-					return callback(true);
+					callback(true);
 				}
+
+				winston.info('[Newsletter] Finished main loop with error value: '+ typeof err + " "+ err);
 			});
 		};
 
