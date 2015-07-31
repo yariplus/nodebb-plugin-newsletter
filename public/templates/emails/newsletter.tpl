@@ -1,6 +1,11 @@
 {body}
-<p style="text-align: center;">
-    <small>
-        This message is from <a href="{url}">{title}</a><br>
-    </small>
+
+<p>
+	[[email:closing]]<br />
+	<strong>{title}</strong>
+</p>
+
+<hr />
+<p>
+	[[newsletter:unsub.info]] <a href="{url}/user/{userslug}/settings#newsletter">[[email:unsub.cta]]</a>.
 </p>

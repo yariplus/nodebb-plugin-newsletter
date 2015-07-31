@@ -114,7 +114,7 @@
 				// async.apply(db.getSortedSetRange, data.group, 0, -1),
 				function (uids, next) {
 					console.log(uids);
-					next(null, uids, ['uid', 'email', 'username', 'banned']);
+					next(null, uids, ['uid', 'email', 'username', 'userslug', 'banned']);
 				},
 				async.apply(User.getMultipleUserFields),
 
@@ -129,33 +129,43 @@
 						winston.info('[Newsletter] Sending email newsletter to '+users.length+' users: ');
 						async.eachLimit(users, 100, function (userObj, next) {
 
-							// Check for nulls and warn.
-							if (!(!!userObj && !!userObj.uid && !!userObj.email && !!userObj.username)) {
-								winston.warn('[Newsletter] Null data at uid ' + userObj.uid + ', skipping.');
+							User.getSettings(userObj.uid, function (err, settings) {
+
+								// Check for nulls and warn.
+								if (!(!!userObj && !!userObj.uid && !!userObj.email && !!userObj.username)) {
+									winston.warn('[Newsletter] Null data at uid ' + userObj.uid + ', skipping.');
+									return next(null);
+								}
+
+								// Skip banned users and warn.
+								if (parseInt(userObj.banned, 10) === 1) {
+									winston.warn('[Newsletter] Banned user at uid ' + userObj.uid + ', skipping.');
+									return next(null);
+								}
+
+								// Skip unsubscribed users.
+								if (!settings.pluginNewsletterSub) {
+									winston.warn('[Newsletter] Unsubscribed user at uid ' + userObj.uid + ', skipping.');
+									return next(null);
+								}
+
+								// Email options.
+								var options = {
+									subject: data.subject,
+									username: userObj.username,
+									body: data.template.replace('{username}', userObj.username),
+									title: title,
+									userslug: userObj.userslug,
+									url: nconf.get('url')
+								};
+
+								// Send and go to next user. It will automagically wait if over 100 threads I think.
+								Emailer.send('newsletter', userObj.uid, options);
+								winston.info('[Newsletter] Sent email newsletter to '+ userObj.uid);
 								return next(null);
-							}
 
-							// Skip banned users and warn.
-							if (parseInt(userObj.banned, 10) === 1) {
-								winston.warn('[Newsletter] Banned user at uid ' + userObj.uid + ', skipping.');
-								return next(null);
-							}
-
-							// Email options.
-							var options = {
-								subject: data.subject,
-								username: userObj.username,
-								body: data.template.replace('{username}', userObj.username),
-								title: title,
-								url: nconf.get('url')
-							};
-
-							// Send and go to next user. It will automagically wait if over 100 threads I think.
-							Emailer.send('newsletter', userObj.uid, options);
-							winston.info('[Newsletter] Sent email newsletter to '+ userObj.uid);
-							return next(null);
-
-							// We're done.
+								// We're done.
+							});
 						}, function (err) {
 							winston.info('[Newsletter] Finished email loop with error value: '+ typeof err + " "+ err);
 							next(err);
@@ -189,6 +199,33 @@
 		});
 
 		callback(null, custom_header);
+	};
+
+	Newsletter.filterUserSettings = function (data, next) {
+		//{settings: results.settings, customSettings: [], uid: req.uid}
+
+		data.customSettings.push({
+			title: "[[newsletter:sub-setting]]",
+			content: '\
+			<div class="checkbox">\
+				<label>\
+					<input type="checkbox" data-property="pluginNewsletterSub"> <strong>[[newsletter:sub]]</strong>\
+				</label>\
+				<a name="newsletter"></a>\
+			</div>'
+		});
+
+		next(null, data);
+	};
+
+	Newsletter.filterUserGetSettings = function (data, next) {
+		data.settings.pluginNewsletterSub = (data.settings.pluginNewsletterSub === null || data.settings.pluginNewsletterSub === undefined) ? true : parseInt(data.settings.pluginNewsletterSub, 10) === 1;
+
+		next(null, data);
+	};
+
+	Newsletter.actionSaveSettings = function (data, next) {
+		db.setObjectField('user:' + data.uid + ':settings', 'pluginNewsletterSub', data.settings.pluginNewsletterSub);
 	};
 
 	module.exports = Newsletter;

@@ -8,6 +8,9 @@ define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview', '
 
 		$('#newsletter-send').click(function (e) {
 			e.preventDefault();
+
+			$('#newsletter-preview').find(".emoji").attr("style", "width:20px;height:20px;");
+
 			socket.emit('plugins.Newsletter.send', {
 				subject: $('#newsletter-subject').val(),
 				template: $('#newsletter-preview').html(),
@@ -30,35 +33,18 @@ define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview', '
 		});
 
 		function render() {
-			if (Newsletter.timeoutId) {
-				clearTimeout(Newsletter.timeoutId);
-				Newsletter.timeoutId = 0;
-			}
-			var textarea = $('#newsletter-template');
-
-			Newsletter.timeoutId = setTimeout(function() {
-				socket.emit('modules.composer.renderPreview', textarea.val(), function(err, $preview) {
-					timeoutId = 0;
-					if (err) {
-						return;
-					}
-					$preview = $($preview);
-					$preview.find('img').addClass('img-responsive');
-					$('#newsletter-preview').html($preview);
-					preview.matchScroll($newsletter);
-				});
-			}, 250);
+			preview.render($newsletter, function (err, data) { });
 		}
 
-		$('#newsletter-template').on('input', function (e) {
-			render();
-		});
+		$('#newsletter-template').on('input propertychange', render);
+		$('#newsletter-template').select(render);
 
 		$('#newsletter-template').on('scroll', function (e) {
 			preview.matchScroll($newsletter);
 		});
 
 		render();
+
 		formatting.addHandler($newsletter);
 		formatting.addComposerButtons($newsletter);
 
