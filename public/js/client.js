@@ -33,20 +33,26 @@ define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview', '
 		});
 
 		function render() {
-			preview.render($newsletter, function (err, data) { });
+			if (preview) {
+				preview.render($newsletter, function (err, data) { });
+			}
 		}
 
 		$('#newsletter-template').on('input propertychange', render);
 		$('#newsletter-template').select(render);
 
 		$('#newsletter-template').on('scroll', function (e) {
-			preview.matchScroll($newsletter);
+			if (preview) {
+				preview.matchScroll($newsletter);
+			}
 		});
 
 		render();
 
-		formatting.addHandler($newsletter);
-		formatting.addComposerButtons($newsletter);
+		if (formatting) {
+			formatting.addHandler($newsletter);
+			formatting.addComposerButtons($newsletter);
+		}
 
 		if (config.hasImageUploadPlugin) {
 			$newsletter.find('.img-upload-btn').removeClass('hide');
@@ -58,7 +64,9 @@ define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview', '
 			$newsletter.find('#files.lt-ie9').removeClass('hide');
 		}
 
-		uploads.initialize("newsletter");
+		if (uploads) {
+			uploads.initialize("newsletter");
+		}
 	};
 
 	return Newsletter;

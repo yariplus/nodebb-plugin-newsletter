@@ -28,7 +28,7 @@
 		function render (req, res, next) {
 			async.parallel({
 				groups: function(next) {
-					Groups.getGroups(0, -1, function (err, groups) {
+					Groups.getGroups("groups:createtime", 0, -1, function (err, groups) {
 						if (err) {
 							winston.warn("[Newsletter] Failed to load groups: " + err);
 							return next(err);
@@ -84,7 +84,7 @@
 			// Do all the things.
 			async.waterfall([
 
-				// Make the user is an admin.
+				// Make sure the user is an admin.
 				async.apply(User.isAdministrator, socket.uid),
 				function (isAdmin, next) {
 
@@ -112,13 +112,49 @@
 				},
 				// Why doesn't this work?
 				// async.apply(db.getSortedSetRange, data.group, 0, -1),
-				function (uids, next) {
-					console.log(uids);
-					next(null, uids, ['uid', 'email', 'username', 'userslug', 'banned']);
-				},
-				async.apply(User.getMultipleUserFields),
 
-				//
+				// Get the user fields and settings.
+				function (uids, next) {
+					async.parallel({
+						fields: async.apply(User.getMultipleUserFields, uids, ['uid', 'email', 'username', 'userslug', 'banned']),
+						settings: async.apply(User.getMultipleUserSettings, uids)
+					}, function (err, results) {
+						if (err) return next(err);
+						for (var i in results.fields) {
+							results.fields[i].pluginNewsletterSub = results.settings[i].pluginNewsletterSub;
+						}
+						next(null, results.fields);
+					});
+				},
+
+				// Filter the users.
+				function (users, next) {
+					async.filter(users, function (user, next) {
+
+						// Check for nulls and warn.
+						if (!(!!user && user.uid !== void 0 && !!user.email && !!user.username)) {
+							winston.warn('[Newsletter] Null data at uid ' + user.uid + ', skipping.');
+							return next(false);
+						}
+
+						// Skip banned users and warn.
+						if (parseInt(user.banned, 10) === 1) {
+							winston.warn('[Newsletter] Banned user at uid ' + user.uid + ', skipping.');
+							return next(false);
+						}
+
+						// Skip unsubscribed users.
+						if (!user.pluginNewsletterSub) {
+							winston.warn('[Newsletter] Unsubscribed user at uid ' + user.uid + ', skipping.');
+							return next(false);
+						}
+
+						// User is valid.
+						return next(true);
+					}, function (users) {
+						next(null, users);
+					});
+				},
 				function (users, next) {
 
 					// Get the site Title.
@@ -126,48 +162,27 @@
 						if (err) return next(err);
 
 						// Send the emails.
-						winston.info('[Newsletter] Sending email newsletter to '+users.length+' users: ');
+						winston.info('[Newsletter] Sending email newsletter to ' + users.length + ' users: ');
 						async.eachLimit(users, 100, function (userObj, next) {
 
-							User.getSettings(userObj.uid, function (err, settings) {
+							// Email options.
+							var options = {
+								subject: data.subject,
+								username: userObj.username,
+								body: data.template.replace('{username}', userObj.username),
+								title: title,
+								userslug: userObj.userslug,
+								url: nconf.get('url')
+							};
 
-								// Check for nulls and warn.
-								if (!(!!userObj && !!userObj.uid && !!userObj.email && !!userObj.username)) {
-									winston.warn('[Newsletter] Null data at uid ' + userObj.uid + ', skipping.');
-									return next(null);
-								}
+							// Send and go to next user. It will automagically wait if over 100 threads I think.
+							Emailer.send('newsletter', userObj.uid, options);
+							winston.info('[Newsletter] Sent email newsletter to '+ userObj.uid);
+							return next(null);
 
-								// Skip banned users and warn.
-								if (parseInt(userObj.banned, 10) === 1) {
-									winston.warn('[Newsletter] Banned user at uid ' + userObj.uid + ', skipping.');
-									return next(null);
-								}
-
-								// Skip unsubscribed users.
-								if (!settings.pluginNewsletterSub) {
-									winston.warn('[Newsletter] Unsubscribed user at uid ' + userObj.uid + ', skipping.');
-									return next(null);
-								}
-
-								// Email options.
-								var options = {
-									subject: data.subject,
-									username: userObj.username,
-									body: data.template.replace('{username}', userObj.username),
-									title: title,
-									userslug: userObj.userslug,
-									url: nconf.get('url')
-								};
-
-								// Send and go to next user. It will automagically wait if over 100 threads I think.
-								Emailer.send('newsletter', userObj.uid, options);
-								winston.info('[Newsletter] Sent email newsletter to '+ userObj.uid);
-								return next(null);
-
-								// We're done.
-							});
+							// We're done.
 						}, function (err) {
-							winston.info('[Newsletter] Finished email loop with error value: '+ typeof err + " "+ err);
+							winston.info('[Newsletter] Finished email loop with error value: ' + err);
 							next(err);
 						});
 					});
@@ -183,7 +198,7 @@
 					callback(true);
 				}
 
-				winston.info('[Newsletter] Finished main loop with error value: '+ typeof err + " "+ err);
+				winston.info('[Newsletter] Finished main loop with error value: ' + err);
 			});
 		};
 
@@ -203,13 +218,14 @@
 
 	Newsletter.filterUserSettings = function (data, next) {
 		//{settings: results.settings, customSettings: [], uid: req.uid}
+		data.settings.pluginNewsletterSub = data.settings.pluginNewsletterSub !== void 0 ? parseInt(data.settings.pluginNewsletterSub, 10) === 1 : true;
 
 		data.customSettings.push({
 			title: "[[newsletter:sub-setting]]",
 			content: '\
 			<div class="checkbox">\
 				<label>\
-					<input type="checkbox" data-property="pluginNewsletterSub"> <strong>[[newsletter:sub]]</strong>\
+					<input type="checkbox" data-property="pluginNewsletterSub"' + (data.settings.pluginNewsletterSub ? ' checked' : '') + '> <strong>[[newsletter:sub]]</strong>\
 				</label>\
 				<a name="newsletter"></a>\
 			</div>'
@@ -219,7 +235,7 @@
 	};
 
 	Newsletter.filterUserGetSettings = function (data, next) {
-		data.settings.pluginNewsletterSub = (data.settings.pluginNewsletterSub === null || data.settings.pluginNewsletterSub === undefined) ? true : parseInt(data.settings.pluginNewsletterSub, 10) === 1;
+		if (data.settings.pluginNewsletterSub === void 0) data.settings.pluginNewsletterSub = '1';
 
 		next(null, data);
 	};
