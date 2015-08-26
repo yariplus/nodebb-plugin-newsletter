@@ -28,7 +28,7 @@
 		function render (req, res, next) {
 			async.parallel({
 				groups: function(next) {
-					Groups.getGroups("groups:createtime", 0, -1, function (err, groups) {
+					db.getSortedSetRevRange("groups:createtime", 0, -1, function (err, groups) {
 						if (err) {
 							winston.warn("[Newsletter] Failed to load groups: " + err);
 							return next(err);
