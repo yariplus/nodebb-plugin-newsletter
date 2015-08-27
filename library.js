@@ -175,10 +175,7 @@
 								url: nconf.get('url')
 							};
 
-							// Send and go to next user. It will automagically wait if over 100 threads I think.
-							Emailer.send('newsletter', userObj.uid, options);
-							winston.info('[Newsletter] Sent email newsletter to '+ userObj.uid);
-							return next(null);
+							Emailer.send('newsletter', userObj.uid, options, next);
 
 							// We're done.
 						}, function (err) {
