@@ -1,34 +1,28 @@
 {
-  "name": "nodebb-plugin-newsletter",
-  "version": "0.2.3",
-  "description": "Send an email newsletter to all users or a group of users.",
-  "main": "library.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yariplus/nodebb-plugin-newsletter"
-  },
-  "keywords": [
-    "nodebb",
-    "plugin",
-    "email",
-    "newsletter"
-  ],
-  "author": {
-    "name": "yariplus",
-    "email": "tafike@gmail.com"
-  },
-  "license": "CC0",
-  "bugs": {
-    "url": "https://github.com/yariplus/nodebb-plugin-newsletter/issues"
-  },
-  "readme": "",
-  "readmeFilename": "README.md",
-  "dependencies": {},
-  "nbbpm": {
-    "compatibility": ">=0.6.0"
-  },
-  "homepage": "https://github.com/yariplus/nodebb-plugin-newsletter"
+	"name": "nodebb-plugin-newsletter",
+	"version": "0.2.3",
+	"description": "Send an email newsletter to all users or a group of users.",
+	"main": "library.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/yariplus/nodebb-plugin-newsletter"
+	},
+	"keywords": [
+		"nodebb",
+		"plugin",
+		"email",
+		"newsletter"
+	],
+	"author": {
+		"name": "Timothy Fike",
+		"email": "tafike@gmail.com"
+	},
+	"license": "(CC0-1.0 OR MIT)",
+	"bugs": {
+		"url": "https://github.com/yariplus/nodebb-plugin-newsletter/issues"
+	},
+	"homepage": "https://github.com/yariplus/nodebb-plugin-newsletter",
+	"nbbpm": {
+		"compatibility": "^0.8.0 || ^0.9.0"
+	}
 }
