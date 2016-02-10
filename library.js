@@ -9,9 +9,9 @@ var	NodeBB     = module.parent,
 	Plugins    = NodeBB.require('./plugins'),
 	SioPlugins = NodeBB.require('./socket.io/plugins'),
 
-	async      = require('async'),
-	winston    = require('winston'),
-	nconf      = require('nconf'),
+	async      = NodeBB.require('async'),
+	winston    = NodeBB.require('winston'),
+	nconf      = NodeBB.require('nconf'),
 
 	Newsletter = module.exports = { };
 
