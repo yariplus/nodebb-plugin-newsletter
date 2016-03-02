@@ -10,7 +10,19 @@
 		"public": "public"
 	},
 	"acpScripts": [
-		"public/js/client.js"
+		"public/js/client.js",
+		"../nodebb-plugin-composer-default/static/lib/client.js",
+		"../nodebb-plugin-composer-default/static/lib/composer.js",
+		"../nodebb-plugin-composer-default/static/lib/composer/categoryList.js",
+		"../nodebb-plugin-composer-default/static/lib/composer/controls.js",
+		"../nodebb-plugin-composer-default/static/lib/composer/drafts.js",
+		"../nodebb-plugin-composer-default/static/lib/composer/formatting.js",
+		"../nodebb-plugin-composer-default/static/lib/composer/preview.js",
+		"../nodebb-plugin-composer-default/static/lib/composer/resize.js",
+		"../nodebb-plugin-composer-default/static/lib/composer/tags.js",
+		"../nodebb-plugin-composer-default/static/lib/composer/uploads.js",
+		"../nodebb-plugin-composer-default/static/lib/composer/autocomplete.js",
+		"../nodebb-plugin-markdown/public/js/client.js"
 	],
 	"less": [
 		"public/less/style.less"

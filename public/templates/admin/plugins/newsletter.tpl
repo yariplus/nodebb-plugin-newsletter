@@ -1,4 +1,4 @@
-<div class="composer" id="cmp-uuid-newsletter">
+<div class="composer" component="composer" id="cmp-uuid-newsletter">
 <div id="newsletter">
     <h1><i class="fa fa-fw fa-newspaper-o"></i>Newsletter</h1>
     <div class="row">
