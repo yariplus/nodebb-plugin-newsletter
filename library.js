@@ -141,7 +141,7 @@ Newsletter.load = function (data, callback) {
 					}
 
 					// Skip unsubscribed users.
-					if (!user.pluginNewsletterSub) {
+					if (!parseInt(user.pluginNewsletterSub, 10)) {
 						winston.warn('[Newsletter] Unsubscribed user at uid ' + user.uid + ', skipping.');
 						return next(false);
 					}
@@ -210,7 +210,7 @@ Newsletter.adminHeader = function (custom_header, callback) {
 	callback(null, custom_header);
 };
 
-Newsletter.filterUserSettings = function (data, next) {
+Newsletter.filterUserCustomSettings = function (data, next) {
 	//{settings: results.settings, customSettings: [], uid: req.uid}
 	data.settings.pluginNewsletterSub = data.settings.pluginNewsletterSub !== void 0 ? parseInt(data.settings.pluginNewsletterSub, 10) === 1 : true;
 

@@ -28,10 +28,10 @@
 		"public/less/style.less"
 	],
 	"hooks": [
-		{ "hook": "static:app.load",           "method": "load" },
-		{ "hook": "filter:admin.header.build", "method": "adminHeader" },
-		{ "hook": "filter:user.settings",      "method": "filterUserSettings" },
-		{ "hook": "filter:user.getSettings",   "method": "filterUserGetSettings" },
-		{ "hook": "action:user.saveSettings",  "method": "actionSaveSettings" }
+		{ "hook": "static:app.load",            "method": "load" },
+		{ "hook": "filter:admin.header.build",  "method": "adminHeader" },
+		{ "hook": "filter:user.customSettings", "method": "filterUserCustomSettings" },
+		{ "hook": "filter:user.getSettings",    "method": "filterUserGetSettings" },
+		{ "hook": "action:user.saveSettings",   "method": "actionSaveSettings" }
 	]
 }
