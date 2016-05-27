@@ -21,24 +21,22 @@
             <label class="form-label" for="newsletter-preview">Preview</label>
         </div>
         <div class="btn-group col-sm-12">
-            <!-- BEGIN formatting -->
-                <!-- IF formatting.spacer -->
-                <span class="btn spacer"></span>
-                <!-- ELSE -->
-                <!-- IF !formatting.mobile -->
-                <span class="btn btn-link" tabindex="-1" data-format="{formatting.name}"><i class="{formatting.className}"></i></span>
-                <!-- ENDIF !formatting.mobile -->
-                <!-- ENDIF formatting.spacer -->
-            <!-- END formatting -->
-            <span class="btn btn-link img-upload-btn hide" data-format="picture" tabindex="-1">
-                <i class="fa fa-picture-o"></i>
-            </span>
-            <span class="btn btn-link file-upload-btn hide" data-format="upload" tabindex="-1">
-                <i class="fa fa-upload"></i>
-            </span>
+			<span class="btn btn-link" tabindex="-1" data-format="bold" title="[[modules:composer.formatting.bold]]"><i class="fa fa-bold"></i></span>
+			<span class="btn btn-link" tabindex="-1" data-format="italic" title="[[modules:composer.formatting.italic]]"><i class="fa fa-italic"></i></span>
+			<span class="btn btn-link" tabindex="-1" data-format="list" title="[[modules:composer.formatting.list]]"><i class="fa fa-list"></i></span>
+			<span class="btn btn-link" tabindex="-1" data-format="strikethrough" title="[[modules:composer.formatting.strikethrough]]"><i class="fa fa-strikethrough"></i></span>
+			<span class="btn btn-link" tabindex="-1" data-format="link" title="[[modules:composer.formatting.link]]"><i class="fa fa-link"></i></span>
+			<span class="btn btn-link" tabindex="-1" data-format="picture-o" title="[[modules:composer.formatting.picture]]"><i class="fa fa-picture-o"></i></span>
+            <span class="btn btn-link img-upload-btn hide" data-format="picture" tabindex="-1" title="[[modules:composer.upload-picture]]"><i class="fa fa-cloud-upload"></i></span>
+            <span class="btn btn-link file-upload-btn hide" data-format="upload" tabindex="-1" title="[[modules:composer.upload-file]]"><i class="fa fa-upload"></i></span>
             <form id="fileForm" method="post" enctype="multipart/form-data">
-                <input type="file" id="files" name="files[]" multiple class="gte-ie9 hide"/>
-            </form>
+				<!--[if gte IE 9]><!-->
+					<input type="file" id="files" name="files[]" multiple class="gte-ie9 hide"/>
+				<!--<![endif]-->
+				<!--[if lt IE 9]>
+					<input type="file" id="files" name="files[]" class="lt-ie9 hide" value="Upload"/>
+				<![endif]-->
+			</form>
         </div>
     </div>
     <div class="row">
