@@ -17,6 +17,21 @@ define('admin/plugins/newsletter',[
 
 			$('#newsletter-preview').find(".emoji").attr("style", "width:20px;height:20px;");
 
+			// Append origin to uploaded images/files.
+			$newsletter.find('#newsletter-preview').find('img').each(function(){
+				var $el = $(this);
+				var src = $el.attr('src');
+				var origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+				if (src.match(/^\/uploads/)) $el.attr('src', origin + src);
+			});
+
+			$newsletter.find('#newsletter-preview').find('a').each(function(){
+				var $el = $(this);
+				var src = $el.attr('href');
+				var origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+				if (src.match(/^\/uploads/)) $el.attr('href', origin + src);
+			});
+
 			socket.emit('plugins.Newsletter.send', {
 				subject: $('#newsletter-subject').val(),
 				template: $('#newsletter-preview').html(),
@@ -67,10 +82,12 @@ define('admin/plugins/newsletter',[
 
 		if (config.hasImageUploadPlugin) {
 			$newsletter.find('.img-upload-btn').removeClass('hide');
+			$newsletter.find('#files.lt-ie9').removeClass('hide');
 		}
 
 		if (config.allowFileUploads) {
 			$newsletter.find('.file-upload-btn').removeClass('hide');
+			$newsletter.find('#files.lt-ie9').removeClass('hide');
 		}
 
 		if (uploads) {
