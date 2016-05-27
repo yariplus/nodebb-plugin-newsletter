@@ -7,6 +7,12 @@
             <input class="form-control" id="newsletter-subject" type="text"/>
         </div>
     </div>
+	<div class="checkbox">
+		<label for="raw">
+			<input id="raw" type="checkbox">
+			Parse raw HTML.
+		</label>
+	</div>
     <div class="btn-toolbar formatting-bar row">
         <div class="form-group col-md-6">
             <label class="form-label" for="newsletter-template">Body</label><span> ( Parsed as a Post, and you can use &#123;username&#125; )</span>

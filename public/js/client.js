@@ -1,6 +1,6 @@
-"use strict";
-
 define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview', 'composer/uploads'], function (formatting, preview, uploads) {
+	"use strict";
+
 	var Newsletter = { };
 
 	Newsletter.init = function () {
@@ -34,12 +34,19 @@ define('admin/plugins/newsletter', ['composer/formatting', 'composer/preview', '
 
 		function render() {
 			if (preview) {
-				preview.render($newsletter, function (err, data) { });
+				preview.render($newsletter, function (err, data) {
+					if ($('#raw').is(":checked")) {
+						var txt = document.createElement("textarea");
+						txt.innerHTML = $('#newsletter-preview').html();
+						$('#newsletter-preview').html(txt.value);
+					}
+				});
 			}
 		}
 
 		$('#newsletter-template').on('input propertychange', render);
 		$('#newsletter-template').select(render);
+		$('#raw').change(render);
 
 		$('#newsletter-template').on('scroll', function (e) {
 			if (preview) {
