@@ -54,14 +54,16 @@ define('admin/plugins/newsletter',[
 		});
 
 		function render() {
+			var raw = $('#raw').is(":checked");
+
 			if (preview) {
-				preview.render($newsletter, function (err, data) {
-					if ($('#raw').is(":checked")) {
-						var txt = document.createElement("textarea");
-						txt.innerHTML = $('#newsletter-preview').html();
-						$('#newsletter-preview').html(txt.value);
-					}
-				});
+				if (raw) {
+					$('#newsletter-preview').html($('#newsletter-template').val());
+					$('.btn-group.col-sm-12').hide();
+				}else{
+					preview.render($newsletter);
+					$('.btn-group.col-sm-12').show();
+				}
 			}
 		}
 
