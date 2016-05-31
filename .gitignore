@@ -31,4 +31,4 @@ build
 
 # Distribution Files
 *.js
-public
+./public
