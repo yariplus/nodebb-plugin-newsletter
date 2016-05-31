@@ -7,9 +7,10 @@ module.exports = (grunt) ->
         sourceMap: false
         presets: [ 'es2015' ]
       dist: files: [ {
+        'cwd': 'src'
         'expand': true
         'src': [ '**/*.es6' ]
-        'dest': 'build/'
+        'dest': './'
         'ext': '.js'
       } ]
   grunt.registerTask 'default', [ 'babel' ]

@@ -28,3 +28,7 @@ node_modules
 
 # Babel
 build
+
+# Distribution Files
+*.js
+public
