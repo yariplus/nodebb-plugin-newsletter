@@ -28,7 +28,16 @@
   "nbbpm": {
     "compatibility": "^1.0.0"
   },
+  "engines": {
+    "node": ">=0.10"
+  },
   "devDependencies": {
-    "babel-cli": "^6.9.0"
+    "babel-cli": "^6.9.0",
+    "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-babel": "^6.0.0",
+    "load-grunt-tasks": "^3.5.0",
+    "mocha": "^2.5.3",
+    "standard": "^7.1.1"
   }
 }
