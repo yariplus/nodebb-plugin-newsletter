@@ -13,6 +13,9 @@
     "email",
     "newsletter"
   ],
+  "scripts": {
+    "test": "echo \"No tests yet.\""
+  },
   "author": {
     "name": "Timothy Fike",
     "email": "tafike@gmail.com"
@@ -24,5 +27,8 @@
   "homepage": "https://github.com/yariplus/nodebb-plugin-newsletter",
   "nbbpm": {
     "compatibility": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0"
   }
 }
