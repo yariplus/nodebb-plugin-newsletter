@@ -24,6 +24,6 @@ module.exports = (grunt) ->
         src: ['test/**/*.js']
       }
     }
-  grunt.registerTask 'test', 'Run unit and formatting tests.', [ 'mochaTest' ]
+  grunt.registerTask 'test', 'Run unit and formatting tests.', [ 'compile', 'mochaTest' ]
   grunt.registerTask 'compile', 'Transpile ES6 sources to js.', [ 'babel' ]
   return
