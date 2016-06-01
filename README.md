@@ -5,8 +5,6 @@
   <br>
 </h1>
 
----
-
 <h4 align="center">Send e-mail newsletters to your users.</h4>
 
 <p align="center">
@@ -18,3 +16,4 @@
   <a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode"><img src="https://img.shields.io/badge/license-CCO--1.0-ff69b4.svg?maxAge=2592000?style=plastic" alt="license"></a>
 </p>
 
+<br>
