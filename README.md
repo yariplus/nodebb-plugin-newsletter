@@ -1,10 +1,20 @@
-# NodeBB Plugin Newsletter
+<h1 align="center">
+  <img src="http://puu.sh/pcIZI/600b1c04a9.svg" height="200" with="200">
+  <br>
+  NodeBB Plugin Newsletter
+  <br>
+</h1>
 
-[![Travis CI](https://img.shields.io/travis/yariplus/nodebb-plugin-newsletter.svg?maxAge=2592000?style=plastic)](https://travis-ci.org/yariplus/nodebb-plugin-newsletter)
-[![npm](https://img.shields.io/npm/v/nodebb-plugin-newsletter.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/nodebb-plugin-newsletter)
-[![npm](https://img.shields.io/npm/dm/nodebb-plugin-newsletter.svg?maxAge=2592000?style=plastic)](https://www.npmjs.com/package/nodebb-plugin-newsletter)
-[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg?maxAge=2592000?style=plastic)](https://raw.githubusercontent.com/yariplus/nodebb-plugin-newsletter/master/LICENSE)
-[![license](https://img.shields.io/badge/license-CCO--1.0-ff69b4.svg?maxAge=2592000?style=plastic)](https://creativecommons.org/publicdomain/zero/1.0/legalcode)
+---
 
-Send an email newsletter to all users or a group of users.
+<h4 align="center">Send e-mail newsletters to your users.</h4>
+
+<p align="center">
+  <a href="https://travis-ci.org/yariplus/nodebb-plugin-newsletter"><img src="https://img.shields.io/travis/yariplus/nodebb-plugin-newsletter.svg?maxAge=2592000?style=plastic" alt="Travis CI"></a>
+  <a href="https://www.npmjs.com/package/nodebb-plugin-newsletter"><img src="https://img.shields.io/npm/v/nodebb-plugin-newsletter.svg?maxAge=2592000?style=plastic" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/nodebb-plugin-newsletter"><img src="https://img.shields.io/npm/dm/nodebb-plugin-newsletter.svg?maxAge=2592000?style=plastic" alt="npm"></a>
+  <a href="http://standardjs.com/"><img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg" alt="js-standard-style"></a>
+  <a href="https://raw.githubusercontent.com/yariplus/nodebb-plugin-newsletter/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?maxAge=2592000?style=plastic" alt="license"></a>
+  <a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode"><img src="https://img.shields.io/badge/license-CCO--1.0-ff69b4.svg?maxAge=2592000?style=plastic" alt="license"></a>
+</p>
+
