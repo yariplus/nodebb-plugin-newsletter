@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="http://puu.sh/pcIZI/600b1c04a9.svg" height="200" with="200">
+  <a href="https://community.nodebb.org/topic/4481"><img src="http://puu.sh/pcIZI/600b1c04a9.svg" height="200" with="200"></a>
   <br>
   NodeBB Plugin Newsletter
   <br>
