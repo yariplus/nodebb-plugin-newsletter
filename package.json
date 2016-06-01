@@ -14,7 +14,7 @@
     "newsletter"
   ],
   "scripts": {
-    "test": "echo \"No tests yet.\""
+    "test": "grunt test"
   },
   "author": {
     "name": "Timothy Fike",
@@ -35,11 +35,13 @@
     "parser": "babel-eslint"
   },
   "devDependencies": {
-    "babel-cli": "^6.9.0",
     "babel-preset-es2015": "^6.9.0",
+    "babel-register": "^6.9.0",
     "chai": "^3.5.0",
     "grunt": "^1.0.1",
     "grunt-babel": "^6.0.0",
+    "grunt-mocha-test": "^0.12.7",
+    "grunt-standard": "^2.0.0",
     "load-grunt-tasks": "^3.5.0",
     "mocha": "^2.5.3",
     "standard": "^7.1.1"

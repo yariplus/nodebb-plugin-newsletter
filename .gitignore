@@ -28,3 +28,6 @@ node_modules
 
 # Distribution Files
 *.js
+
+# Tests
+!test/*.js
