@@ -1,3 +1,7 @@
+addons:
+  code_climate:
+    repo_token:
+      secure: "fJc+AR0opMZJEIr1GfawI81NNEvIoKzU+fUX/fOHixzh9cuILseU3XpoRRdsvwQN+wB0gasYCqlM5LzyQVcXIzaWz3EAHYxUK6LkmR5mn1TbqNYHH3xtqu/Er9/T5W6nGfGYRKigRJfQ+EKs90z5z5a8cMsgtrSBbCALSTVQti2KznuMR4Sa7zMvtgL0zJZrFbjMNHXQ27r6eBIZVGqI5isjpKhPOZsOZnx5OD+8wmeHJBClKdyfRGEBMss2zstrESTDa8BtcTA1fV9HjSYNSxVCZdhZIF+OWt3lgxI51o1TW+9Fy2kIgR4Hp2vf858WPlKnyYsUGY4Rb+QaLs9pyU2NhK7aBPGj6JVaN4xdGJvdBrrsv8IdR/GadQOCgjLEuEqfL3BVtpyBJ/cC/ILTXF0m6YmjiIJn4hqfnI8OjXTG7bhehi6kFKUuc05TD3pfw2+Km2apN7343Y4ijvwsQWc8ALJsyPH7cfnXxevnG+Jwsx6DXbUA20pjJyROfDqnvoxjUIE7+yCoK35uJXWeaCaJL1vpEv+n6HTJWtUyqec2zI5kc7oXM6pqAyScdhpXZyWA8Mtk9LGb2eMCeXdHERDU/Jj5UZF7afNmRTJ1i4sZOIcFTgMEuHJC/AdGv0/eHcKf3F0Q+MdKHCkKWjT9r3RDzu08/D9rt8i5V/2f5Y8="
 language: node_js
 node_js:
   - "6"
@@ -5,3 +9,5 @@ node_js:
   - "4"
   - "0.12"
   - "0.10"
+after_script:
+  - codeclimate-test-reporter < test/coverage/reports/lcov.info
