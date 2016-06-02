@@ -10,4 +10,5 @@ node_js:
   - "0.12"
   - "0.10"
 after_script:
+  - npm install -g codeclimate-test-reporter
   - codeclimate-test-reporter < test/coverage/reports/lcov.info
