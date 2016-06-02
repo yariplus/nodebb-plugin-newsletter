@@ -1,20 +1,11 @@
-const NodeBB = module.parent
-const db = NodeBB.require('./database')
-const Emailer = NodeBB.require('./emailer')
-const User = NodeBB.require('./user')
-// const Group = NodeBB.require('./groups')
-const Meta = NodeBB.require('./meta')
-const Plugins = NodeBB.require('./plugins')
-const SioPlugins = NodeBB.require('./socket.io/plugins')
-const async = NodeBB.require('async')
-const winston = NodeBB.require('winston')
-const nconf = NodeBB.require('nconf')
-const Newsletter = module.exports = { }
+import * as NodeBB from './nodebb.js'
+
+let {db, Emailer, User, Group, Meta, Plugins, SioPlugins, async, winston, nconf} = NodeBB
 
 function prepend (msg) { return `[Newsletter] ${msg}` }
 
 // Hook: static:app.load
-Newsletter.load = (data, callback) => {
+export function load (data, callback) {
   winston.info(prepend('Initializing Newsletter...'))
 
   const router = data.router
@@ -184,7 +175,7 @@ Newsletter.load = (data, callback) => {
   callback()
 }
 
-Newsletter.adminHeader = (customHeader, callback) => {
+export function adminHeader (customHeader, callback) {
   customHeader.plugins.push({
     route: '/plugins/newsletter',
     icon: 'fa-newspaper-o ',
@@ -194,7 +185,7 @@ Newsletter.adminHeader = (customHeader, callback) => {
   callback(null, customHeader)
 }
 
-Newsletter.filterUserCustomSettings = (data, next) => {
+export function filterUserCustomSettings (data, next) {
   // {settings: results.settings, customSettings: [], uid: req.uid}
   data.settings.pluginNewsletterSub = data.settings.pluginNewsletterSub !== void 0 ? parseInt(data.settings.pluginNewsletterSub, 10) === 1 : true
 
@@ -212,12 +203,12 @@ Newsletter.filterUserCustomSettings = (data, next) => {
   next(null, data)
 }
 
-Newsletter.filterUserGetSettings = (data, next) => {
+export function filterUserGetSettings (data, next) {
   if (data.settings.pluginNewsletterSub === void 0) data.settings.pluginNewsletterSub = '1'
 
   next(null, data)
 }
 
-Newsletter.actionSaveSettings = (data, next) => {
+export function actionSaveSettings (data, next) {
   db.setObjectField(`user:${data.uid}:settings`, 'pluginNewsletterSub', data.settings.pluginNewsletterSub)
 }
