@@ -2,7 +2,7 @@ const chai = require('chai')
 const path = require('path')
 const mock = require('mock-require')
 
-const HOME = process.env.NODEBB_HOME || process.env.HOME + '/nodebb/'
+const HOME = process.env.NODEBB_HOME || process.env.TRAVIS_BUILD_DIR + '/nodebb/'
 
 require(path.join(HOME, 'node_modules/nconf')).file({ file: path.join(HOME, 'config.json') })
 
