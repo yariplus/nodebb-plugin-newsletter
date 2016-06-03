@@ -47,6 +47,7 @@ module.exports = (grunt) ->
         print: 'detail'
       }
     }
-  grunt.registerTask 'test', 'Run unit and formatting tests.', [ 'compile', 'mochaTest', 'instrument', 'reloadTasks', 'storeCoverage', 'makeReport' ]
+  grunt.registerTask 'test', 'Run unit and formatting tests.', [ 'mochaTest', 'instrument', 'reloadTasks', 'storeCoverage', 'makeReport' ]
   grunt.registerTask 'compile', 'Transpile ES6 sources to js.', [ 'babel' ]
+  grunt.registerTask 'package', 'Run all tasks.', [ 'compile', 'test' ]
   return

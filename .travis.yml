@@ -1,14 +1,38 @@
+services:
+  - redis-server
+before_install:
+  - "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10"
+  - "echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list"
+  - "sudo apt-get update"
+  - "sudo apt-get install mongodb-org-server"
+  - "sudo apt-get install -y git build-essential"
+  - "git clone -b v1.x.x https://github.com/NodeBB/NodeBB.git nodebb"
+  - cd nodebb
+  - npm i --production
+  - cd ..
+before_script:
+  - "until nc -z localhost 27017; do echo Waiting for MongoDB; sleep 1; done"
+language: node_js
+env:
+  - CXX=g++-4.8
 addons:
   code_climate:
     repo_token:
       secure: "fJc+AR0opMZJEIr1GfawI81NNEvIoKzU+fUX/fOHixzh9cuILseU3XpoRRdsvwQN+wB0gasYCqlM5LzyQVcXIzaWz3EAHYxUK6LkmR5mn1TbqNYHH3xtqu/Er9/T5W6nGfGYRKigRJfQ+EKs90z5z5a8cMsgtrSBbCALSTVQti2KznuMR4Sa7zMvtgL0zJZrFbjMNHXQ27r6eBIZVGqI5isjpKhPOZsOZnx5OD+8wmeHJBClKdyfRGEBMss2zstrESTDa8BtcTA1fV9HjSYNSxVCZdhZIF+OWt3lgxI51o1TW+9Fy2kIgR4Hp2vf858WPlKnyYsUGY4Rb+QaLs9pyU2NhK7aBPGj6JVaN4xdGJvdBrrsv8IdR/GadQOCgjLEuEqfL3BVtpyBJ/cC/ILTXF0m6YmjiIJn4hqfnI8OjXTG7bhehi6kFKUuc05TD3pfw2+Km2apN7343Y4ijvwsQWc8ALJsyPH7cfnXxevnG+Jwsx6DXbUA20pjJyROfDqnvoxjUIE7+yCoK35uJXWeaCaJL1vpEv+n6HTJWtUyqec2zI5kc7oXM6pqAyScdhpXZyWA8Mtk9LGb2eMCeXdHERDU/Jj5UZF7afNmRTJ1i4sZOIcFTgMEuHJC/AdGv0/eHcKf3F0Q+MdKHCkKWjT9r3RDzu08/D9rt8i5V/2f5Y8="
-language: node_js
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
 node_js:
   - "6"
   - "5"
   - "4"
   - "0.12"
   - "0.10"
+branches:
+  only:
+    - master
 after_script:
   - npm install -g codeclimate-test-reporter
   - codeclimate-test-reporter < test/coverage/reports/lcov.info

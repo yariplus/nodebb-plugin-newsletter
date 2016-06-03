@@ -1,5 +1,3 @@
-export function init () { console.log('a') }
-
 export const db = require.main.require('./src/database')
 export const Emailer = require.main.require('./src/emailer')
 export const User = require.main.require('./src/user')

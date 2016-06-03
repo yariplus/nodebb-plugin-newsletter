@@ -14,7 +14,7 @@
     "newsletter"
   ],
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt package"
   },
   "author": {
     "name": "Timothy Fike",
