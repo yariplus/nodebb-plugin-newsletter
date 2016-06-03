@@ -9,8 +9,8 @@ before_install:
   - "git clone -b v1.x.x https://github.com/NodeBB/NodeBB.git nodebb"
   - cd nodebb
   - npm i --production
-  - cd ..
   - database=mongo node app --setup
+  - cd ..
 before_script:
   - "until nc -z localhost 27017; do echo Waiting for MongoDB; sleep 1; done"
 language: node_js
