@@ -36,4 +36,4 @@ branches:
     - master
 after_script:
   - npm install -g codeclimate-test-reporter
-  - codeclimate-test-reporter < coverage/reports/lcov.info
+  - codeclimate-test-reporter < coverage/lcov.info
