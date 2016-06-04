@@ -1,8 +1,11 @@
 const chai = require('chai')
 const path = require('path')
-const mock = require('mock-require')
+
+const expect = chai.expect
 
 const HOME = process.env.NODEBB_HOME || process.env.TRAVIS_BUILD_DIR + '/nodebb/'
+
+process.env.NODE_ENV = 'development'
 
 require(path.join(HOME, 'node_modules/nconf')).file({ file: path.join(HOME, 'config.json') })
 
@@ -22,31 +25,44 @@ require.main.require = (module) => {
   }
 }
 
-chai.should()
-
-let NodeBB = require(path.join(__dirname, '../lib/', 'nodebb'))
-let Newsletter = require(path.join(__dirname, '../lib/', 'plugin'))
+const NodeBB = require(path.join(__dirname, '../lib/', 'nodebb'))
+const Newsletter = require(path.join(__dirname, '../lib/', 'plugin'))
 
 describe('nodebb', () => {
-  describe('loading nodebb', () => {
-    it('should load the modules', () => {
-      NodeBB.should.have.property('db')
-      NodeBB.should.have.property('Emailer')
-      NodeBB.should.have.property('User')
-      //NodeBB.should.have.property('Group')
-      NodeBB.should.have.property('Meta')
-      NodeBB.should.have.property('Plugins')
-      NodeBB.should.have.property('SioPlugins')
-      NodeBB.should.have.property('async')
-      NodeBB.should.have.property('winston')
-      NodeBB.should.have.property('nconf')
-    })
+  it('should load the modules', () => {
+    expect(NodeBB).to.have.property('db')
+    expect(NodeBB).to.have.property('Emailer')
+    expect(NodeBB).to.have.property('User')
+    //expect(NodeBB).to.have.property('Group')
+    expect(NodeBB).to.have.property('Meta')
+    expect(NodeBB).to.have.property('Plugins')
+    expect(NodeBB).to.have.property('SioPlugins')
+    expect(NodeBB).to.have.property('async')
+    expect(NodeBB).to.have.property('winston')
+    expect(NodeBB).to.have.property('nconf')
   })
 })
+
 describe('newsletter', () => {
-  describe('loading newletter', () => {
-    it('should init the newsletter plugin', () => {
-      Newsletter.should.have.property('load')
+  it('should load the newsletter plugin', () => {
+    expect(Newsletter).to.have.property('load')
+    expect(Newsletter).to.have.property('filterUserGetSettings')
+  })
+  it('should load user settings if they exist', (done) => {
+    Newsletter.filterUserGetSettings({ settings: { pluginNewsletterSub: '1'} }, (err, data) => {
+      expect(err, 'error value').to.equal(null)
+      expect(data.settings.pluginNewsletterSub, 'subscription setting').to.equal('1')
+      done()
     })
+  })
+  it('should create user settings if they do not exist', (done) => {
+    Newsletter.filterUserGetSettings({ settings: { pluginNewsletterSub: void 0 } }, (err, data) => {
+      expect(err, 'error value').to.equal(null)
+      expect(data.settings.pluginNewsletterSub, 'subscription setting').to.equal('1')
+      done()
+    })
+  })
+  it('should add a prefix to log messages', () => {
+    expect(Newsletter._prepend('msg')).to.match(/\[Newsletter\] msg/)
   })
 })
