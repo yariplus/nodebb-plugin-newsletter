@@ -3,7 +3,7 @@ const path = require('path')
 
 const expect = chai.expect
 
-const HOME = process.env.NODEBB_HOME || process.env.TRAVIS_BUILD_DIR + '/nodebb/'
+const HOME = ( process.env.TRAVIS_BUILD_DIR ? process.env.TRAVIS_BUILD_DIR : process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'] ) + '/nodebb/'
 
 process.env.NODE_ENV = 'development'
 

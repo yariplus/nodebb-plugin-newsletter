@@ -16,10 +16,10 @@
   "scripts": {
     "precompile": "echo Compiling ES2015 sources...",
     "compile": "babel src -d .",
-    "pretest": "echo Running tests...",
-    "test": "nyc --require babel-register mocha test/newsletter.js && nyc report --reporter=lcov",
-    "prebuild": "echo Building app and running tests.",
-    "build": "npm run compile && npm run test",
+    "pretest": "npm run compile && echo Running tests...",
+    "test": "npm run compile && npm run test:run",
+    "test:run": "nyc --require babel-register mocha test/newsletter.js",
+    "test:report": "nyc report --reporter=lcov",
     "postbuild": "echo Done.",
     "watch": "watch 'npm -s run build' -d src test"
   },
