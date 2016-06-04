@@ -17,7 +17,7 @@
     "precompile": "echo Compiling ES2015 sources...",
     "compile": "babel src -d .",
     "pretest": "npm run compile && echo Running tests...",
-    "test": "npm run compile && npm run test:run",
+    "test": "npm run compile && npm run test:run && npm run test:report",
     "test:run": "nyc --require babel-register mocha test/newsletter.js",
     "test:report": "nyc report --reporter=lcov",
     "postbuild": "echo Done.",
@@ -40,6 +40,11 @@
   },
   "standard": {
     "parser": "babel-eslint"
+  },
+  "nyc": {
+    "exclude": [
+      "nodebb"
+    ]
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
