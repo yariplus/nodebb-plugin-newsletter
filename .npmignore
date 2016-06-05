@@ -28,4 +28,3 @@ test
 
 # Dot Files
 .*
-!/.gitignore
