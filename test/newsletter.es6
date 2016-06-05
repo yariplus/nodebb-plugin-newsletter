@@ -106,6 +106,40 @@ describe('newsletter', () => {
         })
       })
     })
+    it('should filter nonexisting user settings', () => {
+      Newsletter.filterUserCustomSettings({settings: {}, customSettings: []}, (err, data) => {
+        expect(err, 'error value').to.not.exist
+        expect(data, 'return value').to.exist
+        expect(data.settings.pluginNewsletterSub, 'newsletter settings value').to.be.a('boolean')
+        expect(data.settings.pluginNewsletterSub, 'newsletter settings value').to.be.true
+        expect(data.customSettings[0]).to.exist
+        expect(data.customSettings[0]).to.be.a('object')
+        expect(data.customSettings[0]['title']).to.be.a('string')
+        expect(data.customSettings[0]['content']).to.be.a('string')
+      })
+    })
+    it('should filter existing user settings', () => {
+      Newsletter.filterUserCustomSettings({settings: { pluginNewsletterSub: '1' }, customSettings: []}, (err, data) => {
+        expect(err, 'error value').to.not.exist
+        expect(data, 'return value').to.exist
+        expect(data.settings.pluginNewsletterSub, 'newsletter settings value').to.be.a('boolean')
+        expect(data.settings.pluginNewsletterSub, 'newsletter settings value').to.be.true
+        expect(data.customSettings[0]).to.exist
+        expect(data.customSettings[0]).to.be.a('object')
+        expect(data.customSettings[0]['title']).to.be.a('string')
+        expect(data.customSettings[0]['content']).to.be.a('string')
+      })
+      Newsletter.filterUserCustomSettings({settings: { pluginNewsletterSub: '0' }, customSettings: []}, (err, data) => {
+        expect(err, 'error value').to.not.exist
+        expect(data, 'return value').to.exist
+        expect(data.settings.pluginNewsletterSub, 'newsletter settings value').to.be.a('boolean')
+        expect(data.settings.pluginNewsletterSub, 'newsletter settings value').to.be.false
+        expect(data.customSettings[0]).to.exist
+        expect(data.customSettings[0]).to.be.a('object')
+        expect(data.customSettings[0]['title']).to.be.a('string')
+        expect(data.customSettings[0]['content']).to.be.a('string')
+      })
+    })
   })
   describe('client', () => {
     let browser, htmlStr
