@@ -1,5 +1,6 @@
 const chai = require('chai')
 const path = require('path')
+const atomus = require('atomus')
 
 const expect = chai.expect
 
@@ -10,7 +11,6 @@ process.env.NODE_ENV = 'development'
 require(path.join(HOME, 'node_modules/nconf')).file({ file: path.join(HOME, 'config.json') })
 
 require.main.require = (module) => {
-  console.log(`Requiring module: ${module}`)
   switch (module) {
     case './src/database': return require(path.join(HOME, module))
     case './src/emailer': return require(path.join(HOME, module))
@@ -44,25 +44,43 @@ describe('nodebb', () => {
 })
 
 describe('newsletter', () => {
-  it('should load the newsletter plugin', () => {
-    expect(Newsletter).to.have.property('load')
-    expect(Newsletter).to.have.property('filterUserGetSettings')
-  })
-  it('should load user settings if they exist', (done) => {
-    Newsletter.filterUserGetSettings({ settings: { pluginNewsletterSub: '1'} }, (err, data) => {
-      expect(err, 'error value').to.equal(null)
-      expect(data.settings.pluginNewsletterSub, 'subscription setting').to.equal('1')
-      done()
+  describe('server', () => {
+    it('should load the newsletter plugin', () => {
+      expect(Newsletter).to.have.property('load')
+      expect(Newsletter).to.have.property('filterUserGetSettings')
+    })
+    it('should load user settings if they exist', (done) => {
+      Newsletter.filterUserGetSettings({ settings: { pluginNewsletterSub: '1'} }, (err, data) => {
+        expect(err, 'error value').to.equal(null)
+        expect(data.settings.pluginNewsletterSub, 'subscription setting').to.equal('1')
+        done()
+      })
+    })
+    it('should create user settings if they do not exist', (done) => {
+      Newsletter.filterUserGetSettings({ settings: { pluginNewsletterSub: void 0 } }, (err, data) => {
+        expect(err, 'error value').to.equal(null)
+        expect(data.settings.pluginNewsletterSub, 'subscription setting').to.equal('1')
+        done()
+      })
+    })
+    it('should add a prefix to log messages', () => {
+      expect(Newsletter._prepend('msg')).to.match(/\[Newsletter\] msg/)
     })
   })
-  it('should create user settings if they do not exist', (done) => {
-    Newsletter.filterUserGetSettings({ settings: { pluginNewsletterSub: void 0 } }, (err, data) => {
-      expect(err, 'error value').to.equal(null)
-      expect(data.settings.pluginNewsletterSub, 'subscription setting').to.equal('1')
-      done()
+  describe('client', () => {
+    let browser, htmlStr
+    it('should load the mock page acp.html', () => {
+      try {
+        htmlStr = require('fs').readFileSync('test/mock/acp.html', "utf8")
+      } catch (err) {}
+      expect(htmlStr).to.exist
     })
-  })
-  it('should add a prefix to log messages', () => {
-    expect(Newsletter._prepend('msg')).to.match(/\[Newsletter\] msg/)
+    it('should load a mock browser', function (done) {
+      this.timeout(10000) // This can sometimes take a long time because reasons.
+      let browser = atomus().html(htmlStr).ready((errors, window) => {
+        expect(window).to.exist
+        done()
+      })
+    })
   })
 })

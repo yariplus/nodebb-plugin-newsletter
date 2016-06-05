@@ -24,7 +24,8 @@ node_modules
 *.es6
 
 # Tests
-test/
+test
 
 # Dot Files
 .*
+!/.gitignore
