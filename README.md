@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://travis-ci.org/yariplus/nodebb-plugin-newsletter"><img src="https://img.shields.io/travis/yariplus/nodebb-plugin-newsletter.svg?maxAge=2592000?style=plastic" alt="Travis CI"></a>
-  <a href="https://codeclimate.com/github/yariplus/nodebb-plugin-newsletter/coverage"><img src="https://codeclimate.com/github/yariplus/nodebb-plugin-newsletter/badges/coverage.svg" /></a>
+  <a href="https://codeclimate.com/github/yariplus/nodebb-plugin-newsletter/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/yariplus/nodebb-plugin-newsletter.svg?maxAge=2592000?style=plastic"></a>
   <a href="https://www.npmjs.com/package/nodebb-plugin-newsletter"><img src="https://img.shields.io/npm/v/nodebb-plugin-newsletter.svg?maxAge=2592000?style=plastic" alt="npm"></a>
   <a href="https://www.npmjs.com/package/nodebb-plugin-newsletter"><img src="https://img.shields.io/npm/dm/nodebb-plugin-newsletter.svg?maxAge=2592000?style=plastic" alt="npm"></a>
   <a href="http://standardjs.com/"><img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg" alt="js-standard-style"></a>
