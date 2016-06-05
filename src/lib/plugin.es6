@@ -210,7 +210,7 @@ export function filterUserGetSettings (data, next) {
 }
 
 export function actionSaveSettings (data, next) {
-  db.setObjectField(`user:${data.uid}:settings`, 'pluginNewsletterSub', data.settings.pluginNewsletterSub)
+  db.setObjectField(`user:${data.uid}:settings`, 'pluginNewsletterSub', data.settings.pluginNewsletterSub, next)
 }
 
 export function _prepend(text) { return process.env.NODE_ENV === 'development' ? prepend(text) : null }

@@ -1,13 +1,16 @@
 const chai = require('chai')
 const path = require('path')
 const atomus = require('atomus')
+const fs = require('fs')
 
 const expect = chai.expect
 
+// Find the NodeBB install dir.
 const HOME = ( process.env.TRAVIS_BUILD_DIR ? process.env.TRAVIS_BUILD_DIR : process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'] ) + '/nodebb/'
 
 process.env.NODE_ENV = 'development'
 
+// Load the config file to nconf.
 require(path.join(HOME, 'node_modules/nconf')).file({ file: path.join(HOME, 'config.json') })
 
 require.main.require = (module) => {
@@ -41,6 +44,12 @@ describe('nodebb', () => {
     expect(NodeBB).to.have.property('winston')
     expect(NodeBB).to.have.property('nconf')
   })
+  it('should initialize the database', (done) => {
+    NodeBB.db.init(() => {
+      expect(NodeBB.db).to.have.property('sortedSetRemove')
+      done()
+    })
+  })
 })
 
 describe('newsletter', () => {
@@ -51,14 +60,14 @@ describe('newsletter', () => {
     })
     it('should load user settings if they exist', (done) => {
       Newsletter.filterUserGetSettings({ settings: { pluginNewsletterSub: '1'} }, (err, data) => {
-        expect(err, 'error value').to.equal(null)
+        expect(err, 'error value').to.not.exist
         expect(data.settings.pluginNewsletterSub, 'subscription setting').to.equal('1')
         done()
       })
     })
     it('should create user settings if they do not exist', (done) => {
       Newsletter.filterUserGetSettings({ settings: { pluginNewsletterSub: void 0 } }, (err, data) => {
-        expect(err, 'error value').to.equal(null)
+        expect(err, 'error value').to.not.exist
         expect(data.settings.pluginNewsletterSub, 'subscription setting').to.equal('1')
         done()
       })
@@ -66,12 +75,30 @@ describe('newsletter', () => {
     it('should add a prefix to log messages', () => {
       expect(Newsletter._prepend('msg')).to.match(/\[Newsletter\] msg/)
     })
+    it('should save user settings', (done) => {
+      const settings = {
+        uid: 'test',
+        settings: {
+          pluginNewsletterSub: '1'
+        }
+      }
+      const key = `user:${settings.uid}:settings`
+      NodeBB.db.deleteObjectField(key, 'pluginNewsletterSub', () => {
+        Newsletter.actionSaveSettings(settings, () => {
+          NodeBB.db.getObjectField(key, 'pluginNewsletterSub', (err, setting) => {
+            expect(err, 'error value').to.not.exist
+            expect(setting, 'subscription setting').to.equal('1')
+            done()
+          })
+        })
+      })
+    })
   })
   describe('client', () => {
     let browser, htmlStr
     it('should load the mock page acp.html', () => {
       try {
-        htmlStr = require('fs').readFileSync('test/mock/acp.html', "utf8")
+        htmlStr = fs.readFileSync('test/mock/acp.html', "utf8")
       } catch (err) {}
       expect(htmlStr).to.exist
     })
