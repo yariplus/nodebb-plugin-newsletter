@@ -31,6 +31,19 @@ require.main.require = (module) => {
 const NodeBB = require(path.join(__dirname, '../lib/', 'nodebb'))
 const Newsletter = require(path.join(__dirname, '../lib/', 'plugin'))
 
+it('should load ES6 modules', () => {
+  Newsletter.__interopRequireWildcard(null, (obj) => {
+    expect(obj).to.not.exist
+  })
+  let obj = function () {
+    this.test = true;
+  }
+  obj.prototype.test2 = true;
+  Newsletter.__interopRequireWildcard(new obj(), (obj) => {
+    expect(obj).to.exist
+  })
+})
+
 describe('nodebb', () => {
   it('should load the modules', () => {
     expect(NodeBB).to.have.property('db')

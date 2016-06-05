@@ -213,4 +213,11 @@ export function actionSaveSettings (data, next) {
   db.setObjectField(`user:${data.uid}:settings`, 'pluginNewsletterSub', data.settings.pluginNewsletterSub, next)
 }
 
-export function _prepend(text) { return process.env.NODE_ENV === 'development' ? prepend(text) : null }
+const dev = process.env.NODE_ENV === 'development'
+
+export function _prepend (text) {
+  return prepend(text)
+}
+export function __interopRequireWildcard (obj) {
+  return eval('_interopRequireWildcard')(obj)
+}
