@@ -16,9 +16,9 @@
   "scripts": {
     "precompile": "echo Compiling ES2015 sources...",
     "compile": "babel src -d .",
-    "pretest": "npm run compile && echo Running tests...",
+    "pretest": "echo Running tests...",
     "test": "npm run compile && npm run test:run && npm run test:report",
-    "test:run": "nyc --require babel-register mocha test/newsletter.js",
+    "test:run": "nyc --require babel-register mocha test/newsletter.es6",
     "test:report": "nyc report --reporter=lcov",
     "postbuild": "echo Done.",
     "watch": "watch 'npm -s run build' -d src test"
@@ -43,7 +43,8 @@
   },
   "nyc": {
     "exclude": [
-      "nodebb"
+      "nodebb",
+      "test"
     ]
   },
   "devDependencies": {
