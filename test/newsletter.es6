@@ -4,6 +4,7 @@ const atomus = require('atomus')
 const fs = require('fs')
 
 const expect = chai.expect
+chai.use(require('chai-things'))
 
 // Find the NodeBB install dir.
 const HOME = ( process.env.TRAVIS_BUILD_DIR ? process.env.TRAVIS_BUILD_DIR : process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'] ) + '/nodebb/'
@@ -140,19 +141,41 @@ describe('newsletter', () => {
         expect(data.customSettings[0]['content']).to.be.a('string')
       })
     })
-    it('should initialize the plugin', () => {
-      let app = {
-        router: {
-          get: () => {}
-        },
-        middleware: {
-          admin: {
-            buildHeader: (req, res, next) => { next() }
+    it('should add the admin header', () => {
+      Newsletter.adminHeader({plugins: []}, (err, header) => {
+        expect(err).to.not.exist
+        expect(header).to.an('object')
+        expect(header.plugins).to.be.instanceof(Array)
+        expect(header.plugins[0]).to.an('object')
+        expect(header.plugins[0].route).to.a('string')
+        expect(header.plugins[0].icon).to.a('string')
+        expect(header.plugins[0].name).to.a('string')
+      })
+    })
+    describe('loading the plugin', () => {
+      let app, loadPlugin
+
+      before(() => {
+        app = {
+          router: {
+            routes: []
+          },
+          middleware: {
+            admin: {
+              buildHeader: (req, res, next) => { next() }
+            }
           }
         }
-      }
-
-      expect(() => { Newsletter.load(app, () => {}) }).to.not.throw(Error)
+        app.router.get = (route) => { app.router.routes.push(route) }
+        loadPlugin = () => { Newsletter.load(app, () => {}) }
+      })
+      it('should initialize the plugin', () => {
+        expect(loadPlugin).to.not.throw(Error)
+      })
+      it('should load the admin routes', () => {
+        expect(app.router.routes).to.include.something.that.deep.equals('/admin/plugins/newsletter')
+        expect(app.router.routes).to.include.something.that.deep.equals('/api/admin/plugins/newsletter')
+      })
     })
   })
   describe('client', () => {
