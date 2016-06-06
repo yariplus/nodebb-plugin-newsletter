@@ -1,36 +1,39 @@
 {
-	"id": "nodebb-plugin-newsletter",
-	"name": "NodeBB Plugin Newsletter",
-	"description": "Send an email newsletter to all users or a group of users.",
-	"url": "https://github.com/yariplus/nodebb-plugin-newsletter",
-	"library": "lib/plugin.js",
-	"templates": "public/templates",
-	"languages": "public/language",
-	"staticDirs": {
-		"public": "public"
-	},
-	"acpScripts": [
-		"public/js/client.js",
-		"../nodebb-plugin-composer-default/static/lib/client.js",
-		"../nodebb-plugin-composer-default/static/lib/composer.js",
-		"../nodebb-plugin-composer-default/static/lib/composer/categoryList.js",
-		"../nodebb-plugin-composer-default/static/lib/composer/controls.js",
-		"../nodebb-plugin-composer-default/static/lib/composer/drafts.js",
-		"../nodebb-plugin-composer-default/static/lib/composer/formatting.js",
-		"../nodebb-plugin-composer-default/static/lib/composer/preview.js",
-		"../nodebb-plugin-composer-default/static/lib/composer/resize.js",
-		"../nodebb-plugin-composer-default/static/lib/composer/tags.js",
-		"../nodebb-plugin-composer-default/static/lib/composer/uploads.js",
-		"../nodebb-plugin-composer-default/static/lib/composer/autocomplete.js"
-	],
-	"less": [
-		"public/less/style.less"
-	],
-	"hooks": [
-		{ "hook": "static:app.load",            "method": "load" },
-		{ "hook": "filter:admin.header.build",  "method": "adminHeader" },
-		{ "hook": "filter:user.customSettings", "method": "filterUserCustomSettings" },
-		{ "hook": "filter:user.getSettings",    "method": "filterUserGetSettings" },
-		{ "hook": "action:user.saveSettings",   "method": "actionSaveSettings" }
-	]
+  "id": "nodebb-plugin-newsletter",
+  "name": "NodeBB Plugin Newsletter",
+  "description": "Send an email newsletter to all users or a group of users.",
+  "url": "https://github.com/yariplus/nodebb-plugin-newsletter",
+  "library": "lib/plugin.js",
+  "templates": "public/templates",
+  "languages": "public/language",
+  "staticDirs": {
+    "public": "public"
+  },
+  "acpScripts": [
+    "public/js/client.js",
+    "../nodebb-plugin-composer-default/static/lib/client.js",
+    "../nodebb-plugin-composer-default/static/lib/composer.js",
+    "../nodebb-plugin-composer-default/static/lib/composer/categoryList.js",
+    "../nodebb-plugin-composer-default/static/lib/composer/controls.js",
+    "../nodebb-plugin-composer-default/static/lib/composer/drafts.js",
+    "../nodebb-plugin-composer-default/static/lib/composer/formatting.js",
+    "../nodebb-plugin-composer-default/static/lib/composer/preview.js",
+    "../nodebb-plugin-composer-default/static/lib/composer/resize.js",
+    "../nodebb-plugin-composer-default/static/lib/composer/tags.js",
+    "../nodebb-plugin-composer-default/static/lib/composer/uploads.js",
+    "../nodebb-plugin-composer-default/static/lib/composer/autocomplete.js"
+  ],
+  "less": [
+    "public/less/style.less"
+  ],
+  "acpLess": [
+    "public/less/style.less"
+  ],
+  "hooks": [
+    { "hook": "static:app.load",            "method": "load" },
+    { "hook": "filter:admin.header.build",  "method": "adminHeader" },
+    { "hook": "filter:user.customSettings", "method": "filterUserCustomSettings" },
+    { "hook": "filter:user.getSettings",    "method": "filterUserGetSettings" },
+    { "hook": "action:user.saveSettings",   "method": "actionSaveSettings" }
+  ]
 }
