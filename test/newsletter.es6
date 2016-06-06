@@ -13,7 +13,7 @@ process.env.NODE_ENV = 'development'
 // Load the config file to nconf.
 require(path.join(HOME, 'node_modules/nconf')).file({ file: path.join(HOME, 'config.json') })
 
-require.main.require = (module) => {
+require.main.require = module => {
   switch (module) {
     case './src/database': return require(path.join(HOME, module))
     case './src/emailer': return require(path.join(HOME, module))
@@ -23,7 +23,7 @@ require.main.require = (module) => {
     case './src/plugins': return require(path.join(HOME, module))
     case './src/socket.io/plugins': return require(path.join(HOME, module))
     case 'async': return require(path.join(HOME, 'node_modules', module))
-    case 'winston': return require(path.join(HOME, 'node_modules', module))
+    case 'winston': return {info: () => {}, warn: () => {}}
     case 'nconf': return require(path.join(HOME, 'node_modules', module))
   }
 }
@@ -36,7 +36,7 @@ it('should load ES6 modules', () => {
     expect(obj).to.not.exist
   })
   let obj = function () {
-    this.test = true;
+    this.test = true
   }
   obj.prototype.test2 = true;
   Newsletter.__interopRequireWildcard(new obj(), (obj) => {
@@ -140,9 +140,24 @@ describe('newsletter', () => {
         expect(data.customSettings[0]['content']).to.be.a('string')
       })
     })
+    it('should initialize the plugin', () => {
+      let app = {
+        router: {
+          get: () => {}
+        },
+        middleware: {
+          admin: {
+            buildHeader: (req, res, next) => { next() }
+          }
+        }
+      }
+
+      expect(() => { Newsletter.load(app, () => {}) }).to.not.throw(Error)
+    })
   })
   describe('client', () => {
     let browser, htmlStr
+
     it('should load the mock page acp.html', () => {
       try {
         htmlStr = fs.readFileSync('test/mock/acp.html', "utf8")

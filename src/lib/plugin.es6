@@ -8,8 +8,7 @@ function prepend (msg) { return `[Newsletter] ${msg}` }
 export function load (data, callback) {
   winston.info(prepend('Initializing Newsletter...'))
 
-  const router = data.router
-  const middleware = data.middleware
+  const {router, middleware} = data
 
   function render (req, res, next) {
     async.parallel({
