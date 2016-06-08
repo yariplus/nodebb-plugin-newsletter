@@ -27,8 +27,8 @@ define('admin/plugins/newsletter', [
       let port = window.location.port ? `:${window.location.port}` : ''
       let origin = `${window.location.protocol}//${window.location.hostname}${port}`
 
-      body = body.replace(new RegExp(`(href="${config.relative_path})(\/uploads\/)`, 'gi'), `$1${origin}$2`)
-      body = body.replace(new RegExp(`(src="${config.relative_path})(\/uploads\/)`, 'gi'), `$1${origin}$2`)
+      body = body.replace(new RegExp(`(href="${config.relative_path})(\/)`, 'gi'), `$1${origin}$2`)
+      body = body.replace(new RegExp(`(src="${config.relative_path})(\/)`, 'gi'), `$1${origin}$2`)
 
       socket.emit('admin.Newsletter.send', {
         subject: $('#newsletter-subject').val(),
