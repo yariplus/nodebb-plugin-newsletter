@@ -29,7 +29,14 @@ $(() => {
 
     item.on('click', () => {
       const title = $(`#cmp-uuid-${data.post_uuid}`).find('.title').val() || 'Newsletter Title'
-      const body = $(`#cmp-uuid-${data.post_uuid}`).find('.preview').html() || 'Newsletter Body'
+      let body = $(`#cmp-uuid-${data.post_uuid}`).find('.preview').html() || 'Newsletter Body'
+
+      // Append origin to uploaded images/files.
+      let port = window.location.port ? `:${window.location.port}` : ''
+      let origin = `${window.location.protocol}//${window.location.hostname}${port}`
+
+      body = body.replace(/(href=")(\/uploads\/)/gi, `$1${origin}$2`)
+      body = body.replace(/(src=")(\/uploads\/)/gi, `$1${origin}$2`)
 
       bootbox.dialog({
         title: title,
