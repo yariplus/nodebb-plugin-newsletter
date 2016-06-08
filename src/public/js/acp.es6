@@ -54,15 +54,17 @@ define('admin/plugins/newsletter', [
     })
 
     function snipIt (snippet) {
-      snippetManager.insertSnippet(editor, snippet)
-      editor.focus()
+      return () => {
+        snippetManager.insertSnippet(editor, snippet)
+        editor.focus()
+      }
     }
 
-    $('#bold').click(() => { snipIt('<b>${0:$SELECTION}</b>') })
-    $('#italic').click(() => { snipIt('<i>${0:$SELECTION}</i>') })
-    $('#strikethrough').click(() => { snipIt('<s>${0:$SELECTION}</s>') })
-    $('#link').click(() => { snipIt('<a href="${0:url}">$SELECTION</a>') })
-    $('#image').click(() => { snipIt('<img src="${0:url}">') })
+    $('#bold').click(snipIt('<b>${0:$SELECTION}</b>'))
+    $('#italic').click(snipIt('<i>${0:$SELECTION}</i>'))
+    $('#strikethrough').click(snipIt('<s>${0:$SELECTION}</s>'))
+    $('#link').click(snipIt('<a href="${0:url}">$SELECTION</a>'))
+    $('#image').click(snipIt('<img src="${0:url}">'))
   }
 
   return Newsletter
