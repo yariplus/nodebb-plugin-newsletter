@@ -28,3 +28,6 @@ test
 
 # Dot Files
 .*
+
+# Bashisms
+*.sh

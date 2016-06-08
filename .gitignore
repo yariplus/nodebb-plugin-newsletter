@@ -28,3 +28,6 @@ node_modules
 
 # Coverage
 .nyc_output
+
+# Bashisms
+*.sh
