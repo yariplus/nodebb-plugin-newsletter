@@ -1,10 +1,14 @@
 /* global define, $, app, config, socket */
 
-define('admin/plugins/newsletter', ['translator'], (translator) => {
+define('admin/plugins/newsletter', [
+  'translator',
+  '/vendor/ace/ext-language_tools.js'
+  ], (translator) => {
   const Newsletter = {}
 
   Newsletter.init = () => {
     const editor = ace.edit('newsletter-template')
+    const snippetManager = ace.require("ace/snippets").snippetManager
 
     editor.setTheme('ace/theme/twilight')
     editor.getSession().setMode('ace/mode/html')
@@ -48,6 +52,17 @@ define('admin/plugins/newsletter', ['translator'], (translator) => {
         }
       })
     })
+
+    function snipIt (snippet) {
+      snippetManager.insertSnippet(editor, snippet)
+      editor.focus()
+    }
+
+    $('#bold').click(() => { snipIt('<b>${0:$SELECTION}</b>') })
+    $('#italic').click(() => { snipIt('<i>${0:$SELECTION}</i>') })
+    $('#strikethrough').click(() => { snipIt('<s>${0:$SELECTION}</s>') })
+    $('#link').click(() => { snipIt('<a href="${0:url}">$SELECTION</a>') })
+    $('#image').click(() => { snipIt('<img src="${0:url}">') })
   }
 
   return Newsletter
