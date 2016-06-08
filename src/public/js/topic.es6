@@ -28,8 +28,8 @@ $(() => {
     dropdownEl.append(item)
 
     item.on('click', () => {
-      const title = $(`#cmp-uuid-${data.post_uuid}`).find('.title').val()
-      const body = $(`#cmp-uuid-${data.post_uuid}`).find('.preview').html()
+      const title = $(`#cmp-uuid-${data.post_uuid}`).find('.title').val() || 'Newsletter Title'
+      const body = $(`#cmp-uuid-${data.post_uuid}`).find('.preview').html() || 'Newsletter Body'
 
       bootbox.dialog({
         title: title,
