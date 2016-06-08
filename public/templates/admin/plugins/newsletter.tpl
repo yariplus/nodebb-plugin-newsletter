@@ -1,8 +1,19 @@
 <div id="newsletter">
   <h1><i class="fa fa-fw fa-newspaper-o"></i> Newsletter</h1>
   <div class="form-group">
-      <label class="form-label" for="newsletter-subject">Subject</label>
-      <input class="form-control" id="newsletter-subject" type="text"/>
+    <label class="form-label" for="newsletter-subject">Subject</label>
+    <input class="form-control" id="newsletter-subject" type="text"/>
+  </div>
+  <div class="form-group">
+    <button class="btn btn-default" type="button"><i class="fa fa-bold"></i></button>
+    <button class="btn btn-default" type="button"><i class="fa fa-italic"></i></button>
+    <button class="btn btn-default" type="button"><i class="fa fa-list"></i></button>
+    <button class="btn btn-default" type="button"><i class="fa fa-strikethrough"></i></button>
+    <button class="btn btn-default" type="button"><i class="fa fa-link"></i></button>
+    <button class="btn btn-default" type="button"><i class="fa fa-picture"></i></button>
+    <button class="btn btn-default" type="button"><i class="fa fa-smile-o"></i></button>
+    <button class="btn btn-default" type="button"><i class="fa fa-archive"></i></button>
+    <button class="btn btn-default" type="button"><i class="fa fa-cloud-upload"></i></button>
   </div>
   <div id="newsletter-template"></div>
   <div class="form-group">
