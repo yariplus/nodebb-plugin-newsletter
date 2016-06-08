@@ -12,13 +12,12 @@ define('admin/plugins/newsletter', ['translator'], (translator) => {
     $('#newsletter-preview').click(() => {
       $('#newsletter-modal-subject').html($('#newsletter-subject').val())
       $('#newsletter-modal-body').html(editor.getValue())
-      newsletter-modal-body
     })
 
     const $newsletter = $('#newsletter')
 
     $('#newsletter-send').click(() => {
-      socket.emit('plugins.Newsletter.send', {
+      socket.emit('admin.Newsletter.send', {
         subject: $('#newsletter-subject').val(),
         template: editor.getValue(),
         group: $('#newsletter-group').val()
@@ -27,13 +26,15 @@ define('admin/plugins/newsletter', ['translator'], (translator) => {
           app.alert({
             type: 'success',
             alert_id: 'newsletter-send',
-            title: 'Newsletter Sent'
+            title: 'Newsletter Sent',
+            timeout: 5000
           })
         } else {
           app.alert({
             type: 'error',
             alert_id: 'newsletter-send',
-            title: 'Error'
+            title: 'Error',
+            timeout: 5000
           })
         }
       })

@@ -9,8 +9,11 @@
   "staticDirs": {
     "public": "public"
   },
+  "scripts": [
+    "public/js/topic.js"
+  ],
   "acpScripts": [
-    "public/js/client.js"
+    "public/js/acp.js"
   ],
   "less": [
     "public/less/style.less"

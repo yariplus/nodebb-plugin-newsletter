@@ -1,6 +1,6 @@
 import * as NodeBB from './nodebb.js'
 
-let {db, Emailer, User, Group, Meta, Plugins, SioPlugins, async, winston, nconf} = NodeBB
+let {db, Emailer, User, Group, Meta, Plugins, SioAdmin, async, winston, nconf} = NodeBB
 
 function prepend (msg) { return `[Newsletter] ${msg}` }
 
@@ -8,47 +8,37 @@ function prepend (msg) { return `[Newsletter] ${msg}` }
 export function load (data, callback) {
   winston.info(prepend('Initializing Newsletter...'))
 
-  const {router, middleware} = data
+  const {app, router, middleware} = data
+
+  function getGroups (next) {
+    db.getSortedSetRevRange('groups:createtime', 0, -1, (err, groups) => {
+      if (err) {
+        winston.warn(`[Newsletter] Failed to load groups: ${err}`)
+        return next(err)
+      }
+      function groupsFilter (group, next) {
+        next(group.slice(0, 3) !== 'cid' && group !== 'administrators' && group !== 'registered-users')
+      }
+      function groupsMap (group, next) {
+        next(null, {name: group})
+      }
+      async.waterfall([
+        next => {
+          async.filter(groups, groupsFilter, _groups => {
+            next(null, _groups)
+          })
+        },
+        (_groups, next) => {
+          async.map(_groups, groupsMap, next)
+        }
+      ], next)
+    })
+  }
 
   function render (req, res, next) {
-    async.parallel({
-      groups (next) {
-        db.getSortedSetRevRange('groups:createtime', 0, -1, (err, groups) => {
-          if (err) {
-            winston.warn(`[Newsletter] Failed to load groups: ${err}`)
-            return next(err)
-          }
-          function groupsFilter (group, next) {
-            next(group.slice(0, 3) !== 'cid' && group !== 'administrators' && group !== 'registered-users')
-          }
-          function groupsMap (group, next) {
-            next(null, {name: group})
-          }
-          async.waterfall([
-            next => {
-              async.filter(groups, groupsFilter, _groups => {
-                next(null, _groups)
-              })
-            },
-            (_groups, next) => {
-              async.map(_groups, groupsMap, next)
-            }
-          ], next)
-        })
-      },
-      formatting (next) {
-        Plugins.fireHook('filter:composer.formatting', {
-          options: [
-            { name: 'tags', className: 'fa fa-tags', mobile: true }
-          ]
-        }, (err, payload) => {
-          next(err, payload.options)
-        })
-      }
-    },
-    (err, payload) => {
+    getGroups ((err, groups) => {
       if (!err) {
-        res.render('admin/plugins/newsletter', payload)
+        res.render('admin/plugins/newsletter', {groups: groups})
       } else {
         res.send(`Error: ${err}`)
       }
@@ -58,35 +48,21 @@ export function load (data, callback) {
   router.get('/admin/plugins/newsletter', middleware.admin.buildHeader, render)
   router.get('/api/admin/plugins/newsletter', render)
 
-  SioPlugins.Newsletter = { }
+  SioAdmin.Newsletter = { }
 
   // The user clicked send on the Newsletter page.
-  SioPlugins.Newsletter.send = (socket, data, callback) => {
+  SioAdmin.Newsletter.send = (socket, data, callback) => {
     // Do all the things.
     async.waterfall([
-
-      // Make sure the user is an admin.
-      async.apply(User.isAdministrator, socket.uid),
-      (isAdmin, next) => {
-        // Do a warning if the user is not an admin.
-        if (isAdmin) {
-          winston.info(`[Newsletter] uid ${socket.uid} sent a newsletter.`)
-        } else {
-          winston.warn(`[socket.io] Call to admin method ( plugins.Newsletter.send ) blocked (accessed by uid ${socket.uid})`)
-          return next(new Error('[[error:not_admin]]'))
-        }
+      next => {
+        // Send an alert.
+        winston.info(prepend(`uid ${socket.uid} is attempting to send a newsletter.`))
 
         // Set the correct group.
-        if (data.group === 'everyone') {
-          data.group = 'users:joindate'
-        } else {
-          data.group = `group:${data.group}:members`
-        }
+        data.group = data.group === 'everyone' ? 'users:joindate' : `group:${data.group}:members`
         winston.info(`[Newsletter] Sending to group "${data.group}".`)
-        return next()
-      },
 
-      next => {
+        // Get the group uids.
         db.getSortedSetRange(data.group, 0, -1, next)
       },
       (uids, next) => {
@@ -167,6 +143,14 @@ export function load (data, callback) {
       }
 
       winston.info(`[Newsletter] Finished main loop with error value: ${err}`)
+    })
+  }
+
+  SioAdmin.Newsletter.getGroupsList = (socket, data, callback) => {
+    getGroups((err, groups) => {
+      const html = app.render('partials/newsletter-groups', {groups: groups}, (err, html) => {
+        callback(null, {html: html})
+      })
     })
   }
 

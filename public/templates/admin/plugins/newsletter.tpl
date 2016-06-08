@@ -10,22 +10,13 @@
     <button class="btn btn-default" type="button"><i class="fa fa-list"></i></button>
     <button class="btn btn-default" type="button"><i class="fa fa-strikethrough"></i></button>
     <button class="btn btn-default" type="button"><i class="fa fa-link"></i></button>
-    <button class="btn btn-default" type="button"><i class="fa fa-picture"></i></button>
+    <button class="btn btn-default" type="button"><i class="fa fa-picture-o"></i></button>
     <button class="btn btn-default" type="button"><i class="fa fa-smile-o"></i></button>
     <button class="btn btn-default" type="button"><i class="fa fa-archive"></i></button>
     <button class="btn btn-default" type="button"><i class="fa fa-cloud-upload"></i></button>
   </div>
   <div id="newsletter-template"></div>
-  <div class="form-group">
-    <label class="form-label" for="newsletter-group">Send to Group</label>
-    <select class="form-control" id="newsletter-group">
-      <option value="everyone">Everyone</option>
-      <option value="administrators">Administrators</option>
-      <!-- BEGIN groups -->
-      <option value="{groups.name}">{groups.name}</option>
-      <!-- END groups -->
-    </select>
-  </div>
+  <!-- IMPORT partials/newsletter-groups.tpl -->
   <div class="form-group">
     <button class="btn btn-info" type="button" id="newsletter-preview" data-toggle="modal" data-target="#newsletter-modal"><i class="fa fa-fw fa-eye"></i> Preview Newsletter</button>
     <button class="btn btn-success" type="button" id="newsletter-send"><i class="fa fa-fw fa-newspaper-o"></i> Send Newsletter</button>
@@ -42,7 +33,6 @@
       <div class="modal-body" id="newsletter-modal-body"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
