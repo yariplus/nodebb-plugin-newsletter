@@ -2,8 +2,9 @@
 
 define('admin/plugins/newsletter', [
   'translator',
+  'uploader',
   '/vendor/ace/ext-language_tools.js'
-  ], (translator) => {
+  ], (translator, uploader) => {
   const Newsletter = {}
 
   Newsletter.init = () => {
@@ -21,7 +22,6 @@ define('admin/plugins/newsletter', [
     const $newsletter = $('#newsletter')
 
     $('#newsletter-send').click(() => {
-      // TODO: DRY these methods.
       // Append origin to uploaded images/files.
       let body = editor.getValue()
       let port = window.location.port ? `:${window.location.port}` : ''
@@ -65,6 +65,19 @@ define('admin/plugins/newsletter', [
     $('#strikethrough').click(snipIt('<s>${0:$SELECTION}</s>'))
     $('#link').click(snipIt('<a href="${0:url}">$SELECTION</a>'))
     $('#image').click(snipIt('<img src="${0:url}">'))
+
+    $('#upload').click(() => {
+      uploader.show({route: '/api/post/upload'}, (path) => {
+        if (path.match(/png|jpeg|jpg|gif|bmp/)) {
+          snipIt('<img src="' + path + '">${0}')()
+        } else {
+          snipIt('<a href="' + path + '">${0:uploaded file}</a>')()
+        }
+        setTimeout(() => {
+          editor.focus()
+        }, 1200)
+      })
+    })
   }
 
   return Newsletter
