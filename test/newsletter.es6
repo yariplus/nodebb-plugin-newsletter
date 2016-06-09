@@ -22,7 +22,7 @@ require.main.require = module => {
     //case './src/groups': return require(path.join(HOME, module))
     case './src/meta': return require(path.join(HOME, module))
     case './src/plugins': return require(path.join(HOME, module))
-    case './src/socket.io/plugins': return require(path.join(HOME, module))
+    case './src/socket.io/admin': return require(path.join(HOME, module))
     case 'async': return require(path.join(HOME, 'node_modules', module))
     case 'winston': return {info: () => {}, warn: () => {}}
     case 'nconf': return require(path.join(HOME, 'node_modules', module))
@@ -53,7 +53,7 @@ describe('nodebb', () => {
     //expect(NodeBB).to.have.property('Group')
     expect(NodeBB).to.have.property('Meta')
     expect(NodeBB).to.have.property('Plugins')
-    expect(NodeBB).to.have.property('SioPlugins')
+    expect(NodeBB).to.have.property('SioAdmin')
     expect(NodeBB).to.have.property('async')
     expect(NodeBB).to.have.property('winston')
     expect(NodeBB).to.have.property('nconf')
