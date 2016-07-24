@@ -12,10 +12,18 @@ $(() => {
     if (!app.user.isAdmin) return
 
     const item = $('<li><a href="#"><i class="fa fa-fw fa-newspaper-o"></i> Send as Newsletter</a></li>')
-    const dropdownEl = $('#cmp-uuid-' + data.post_uuid + ' .action-bar .dropdown-menu')
+    let dropdownEl = $('#cmp-uuid-' + data.post_uuid + ' .action-bar .dropdown-menu')
+
+    if (!dropdownEl.length) {
+      const submitEl = $('#cmp-uuid-' + data.post_uuid + ' .composer-submit')
+
+      submitEl.after('<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">[[modules:composer.toggle_dropdown]]</span></button>')
+      submitEl.after('<ul class="dropdown-menu pull-right" role="menu"></ul>')
+
+      dropdownEl = $('#cmp-uuid-' + data.post_uuid + ' .action-bar .dropdown-menu')
+    }
 
     let groupsHtml = ''
-
     socket.emit('admin.Newsletter.getGroupsList', {}, (err, data) => {
       if (err) return console.log(`getGroupsList socket err: ${err.message}`)
       groupsHtml = data.html
