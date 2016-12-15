@@ -177,9 +177,11 @@ export function filterUserCustomSettings (data, next) {
     content: `
         <div class="checkbox">
             <label>
-                <input type="checkbox" data-property="pluginNewsletterSub"${data.settings.pluginNewsletterSub ? ' checked' : ''}> <strong>[[newsletter:sub]]</strong>
+                <input type="checkbox" data-property="pluginNewsletterSub"${data.settings.pluginNewsletterSub ? ' checked' : ''}>
+                <i class="input-helper"></i>
+                [[newsletter:sub]]
+                <a name="newsletter"></a>
             </label>
-            <a name="newsletter"></a>
         </div>`
   })
 
