@@ -6,6 +6,7 @@
   "library": "lib/plugin.js",
   "templates": "public/templates",
   "languages": "public/language",
+  "defaultLang": "en-GB",
   "staticDirs": {
     "public": "public"
   },
