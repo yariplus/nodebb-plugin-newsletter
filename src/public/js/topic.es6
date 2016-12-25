@@ -1,8 +1,6 @@
 /* global socket, config, ajaxify, app */
 
 $(() => {
-  //$(window).on('action:topic.tools.load', addHandlers)
-
   $(window).on('action:composer.loaded', (err, data) => {
     if (data.hasOwnProperty('composerData') && !data.composerData.isMain) {
       // Do nothing, as this is a reply, not a new post
@@ -59,21 +57,11 @@ $(() => {
                 subject: title,
                 template: body,
                 group: $('#newsletter-group').val()
-              }, success => {
-                if (success) {
-                  app.alert({
-                    type: 'success',
-                    alert_id: 'newsletter-send',
-                    title: 'Newsletter Sent',
-                    timeout: 5000
-                  })
+              }, err => {
+                if (err) {
+                  app.alertError(err)
                 } else {
-                  app.alert({
-                    type: 'error',
-                    alert_id: 'newsletter-send',
-                    title: 'Error',
-                    timeout: 5000
-                  })
+                  app.alertSuccess('Newsletter Sent')
                 }
               })
             }

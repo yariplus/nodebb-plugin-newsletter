@@ -34,21 +34,11 @@ define('admin/plugins/newsletter', [
         subject: $('#newsletter-subject').val(),
         template: body,
         group: $('#newsletter-group').val()
-      }, success => {
-        if (success) {
-          app.alert({
-            type: 'success',
-            alert_id: 'newsletter-send',
-            title: 'Newsletter Sent',
-            timeout: 5000
-          })
+      }, err => {
+        if (err) {
+          app.alertError(err)
         } else {
-          app.alert({
-            type: 'error',
-            alert_id: 'newsletter-send',
-            title: 'Error',
-            timeout: 5000
-          })
+          app.alertSuccess('Newsletter Sent')
         }
       })
     })

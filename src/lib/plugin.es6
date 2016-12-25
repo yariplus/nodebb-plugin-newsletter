@@ -2,18 +2,21 @@ import * as NodeBB from './nodebb.js'
 
 let {db, Emailer, User, Group, Meta, Plugins, SioAdmin, async, winston, nconf} = NodeBB
 
-function prepend (msg) { return `[Newsletter] ${msg}` }
+const log = {
+  info (msg) { winston.info(`[Newsletter] ${msg}`) },
+  warn (msg) { winston.warn(`[Newsletter] ${msg}`) }
+}
 
 // Hook: static:app.load
 export function load (data, callback) {
-  winston.info(prepend('Initializing Newsletter...'))
+  log.info('Initializing Newsletter...')
 
   const {app, router, middleware} = data
 
   function getGroups (next) {
     db.getSortedSetRevRange('groups:createtime', 0, -1, (err, groups) => {
       if (err) {
-        winston.warn(`[Newsletter] Failed to load groups: ${err}`)
+        log.warn(`Failed to load groups: ${err}`)
         return next(err)
       }
       function groupsFilter (group, next) {
@@ -52,15 +55,17 @@ export function load (data, callback) {
 
   // The user clicked send on the Newsletter page.
   SioAdmin.Newsletter.send = (socket, data, callback) => {
+    let count = 0
+
     // Do all the things.
     async.waterfall([
       next => {
         // Send an alert.
-        winston.info(prepend(`uid ${socket.uid} is attempting to send a newsletter.`))
+        log.info(`UID ${socket.uid} is attempting to send a newsletter.`)
 
         // Set the correct group.
         data.group = data.group === 'everyone' ? 'users:joindate' : `group:${data.group}:members`
-        winston.info(`[Newsletter] Sending to group "${data.group}".`)
+        log.info(`Sending to group "${data.group}"`)
 
         // Get the group uids.
         db.getSortedSetRange(data.group, 0, -1, next)
@@ -82,35 +87,37 @@ export function load (data, callback) {
         async.filter(users, (user, next) => {
           // Check for nulls and warn.
           if (!(!!user && user.uid !== void 0 && !!user.email && !!user.username)) {
-            winston.warn(`[Newsletter] Null data at uid ${user.uid}, skipping.`)
+            log.warn(`UID ${user.uid} has invalid data, skipping.`)
             return next(false)
           }
 
           // Skip banned users and warn.
           if (parseInt(user.banned, 10) === 1) {
-            winston.warn(`[Newsletter] Banned user at uid ${user.uid}, skipping.`)
+            log.info(`UID ${user.uid} is banned, skipping...`)
             return next(false)
           }
 
           // Skip unsubscribed users.
           if (!parseInt(user.pluginNewsletterSub, 10)) {
-            winston.warn(`[Newsletter] Unsubscribed user at uid ${user.uid}, skipping.`)
+            log.info(`UID ${user.uid} is unsubscribed, skipping...`)
             return next(false)
           }
 
           // User is valid.
           return next(true)
         }, users => {
+          count = users.length
+
           next(null, users)
         })
       },
+
       (users, next) => {
         // Get the site Title.
         Meta.configs.get('title', (err, title) => {
           if (err) return next(err)
 
           // Send the emails.
-          winston.info(`[Newsletter] Sending email newsletter to ${users.length} users: `)
           async.eachLimit(users, 100, (userObj, next) => {
             // Email options.
             const options = {
@@ -125,24 +132,18 @@ export function load (data, callback) {
             Emailer.send('newsletter', userObj.uid, options, next)
 
             // We're done.
-          }, err => {
-            winston.info(`[Newsletter] Finished email loop with error value: ${err}`)
-            next(err)
-          })
+          }, next)
         })
       }
     ], err => {
-      winston.info('[Newsletter] Done sending emails.')
-
-      // Returns true if there were no errors.
       if (err) {
-        winston.warn(`[Newsletter] Error sending emails: ${err.message || err}`)
-        callback(false)
+        log.warn(`Error sending emails:`)
+        winston.warn(err)
       } else {
-        callback(true)
+        log.info(`Successfully sent newsletter to ${count} user(s)!`)
       }
 
-      winston.info(`[Newsletter] Finished main loop with error value: ${err}`)
+      callback(err)
     })
   }
 
@@ -200,9 +201,6 @@ export function actionSaveSettings (data, next) {
 
 const dev = process.env.NODE_ENV === 'development'
 
-export function _prepend (text) {
-  return prepend(text)
-}
 export function __interopRequireWildcard (obj) {
   return eval('_interopRequireWildcard')(obj)
 }
