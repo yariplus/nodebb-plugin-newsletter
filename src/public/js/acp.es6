@@ -3,7 +3,7 @@
 define('admin/plugins/newsletter', [
   'translator',
   'uploader',
-  '/vendor/ace/ext-language_tools.js'
+  'ace/ext-language_tools'
   ], (translator, uploader) => {
   const Newsletter = {}
 
