@@ -1,10 +1,10 @@
-<div id="newsletter">
+<div id="newsletter" style="display:none;">
   <h1><i class="fa fa-fw fa-newspaper-o"></i> Newsletter</h1>
   <div class="form-group">
     <label class="form-label" for="newsletter-subject">Subject</label>
     <input class="form-control" id="newsletter-subject" type="text"/>
   </div>
-  <div id="newsletter-template"></div>
+  <div id="newsletter-template" style="height:700px"></div>
   <!-- IMPORT partials/newsletter-groups.tpl -->
   <div class="form-group">
     <button class="btn btn-info" type="button" id="newsletter-preview" data-toggle="modal" data-target="#newsletter-modal"><i class="fa fa-fw fa-eye"></i> Preview Newsletter</button>

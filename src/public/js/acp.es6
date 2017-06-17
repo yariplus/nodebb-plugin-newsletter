@@ -13,23 +13,17 @@ define('admin/plugins/newsletter', [
     let $everyone = $('#checkbox-everyone')
     let $custom = $('#custom-groups')
 
-    function displayCustomGroups() {
+    function displayCustomGroups(next) {
       if ($everyone[0].checked) {
-        $custom.hide()
+        $custom.fadeOut(next)
       } else {
-        $custom.show()
+        $custom.fadeIn(next)
       }
     }
 
-    tinymce.init({
-      selector: '#newsletter-template',
-      plugins: 'code',
-      toolbar: 'code',
-    })
-
     $('#newsletter-preview').click(() => {
       $('#newsletter-modal-subject').html($('#newsletter-subject').val())
-      $('#newsletter-modal-body').html(editor.getValue())
+      $('#newsletter-modal-body').html(tinymce.activeEditor.getContent())
     })
 
     $('#newsletter-send').click(() => {
@@ -56,7 +50,19 @@ define('admin/plugins/newsletter', [
 
     $everyone.on('change', displayCustomGroups)
 
-    displayCustomGroups()
+    tinymce.init({
+      selector: '#newsletter-template',
+      plugins: 'code',
+      toolbar: 'code',
+      height: '480',
+      setup: (editor) => {
+        editor.on('init', () => {
+          displayCustomGroups(() => {
+            $newsletter.fadeIn()
+          })
+        })
+      },
+    })
   }
 
   return Newsletter
