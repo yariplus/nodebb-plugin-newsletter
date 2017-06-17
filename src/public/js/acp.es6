@@ -52,9 +52,18 @@ define('admin/plugins/newsletter', [
 
     tinymce.init({
       selector: '#newsletter-template',
-      plugins: 'code',
-      toolbar: 'code',
-      height: '480',
+      plugins: [
+        'advlist autolink lists link image charmap preview hr anchor pagebreak',
+        'searchreplace wordcount visualblocks visualchars code',
+        'insertdatetime media nonbreaking contextmenu',
+        'textpattern imagetools',
+        'autoresize textcolor colorpicker smileys table directionality',
+      ],
+      toolbar: 'undo redo | insert smileys | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | ltr rtl | code preview | help',
+      menubar: '',
+      autoresize_bottom_margin: 0,
+      autoresize_min_height: 360,
+      resize: false,
       setup: (editor) => {
         editor.on('init', () => {
           displayCustomGroups(() => {
