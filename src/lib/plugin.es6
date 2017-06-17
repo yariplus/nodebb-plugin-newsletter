@@ -20,14 +20,14 @@ export function load (data, callback) {
         return next(err)
       }
       function groupsFilter (group, next) {
-        next(group.slice(0, 3) !== 'cid' && group !== 'administrators' && group !== 'registered-users')
+        next(false, group.slice(0, 3) !== 'cid' && group !== 'administrators' && group !== 'registered-users')
       }
       function groupsMap (group, next) {
         next(null, {name: group})
       }
       async.waterfall([
         next => {
-          async.filter(groups, groupsFilter, _groups => {
+          async.filter(groups, groupsFilter, (err, _groups) => {
             next(null, _groups)
           })
         },
