@@ -4,18 +4,6 @@
     <label class="form-label" for="newsletter-subject">Subject</label>
     <input class="form-control" id="newsletter-subject" type="text"/>
   </div>
-  <div class="form-group">
-    <button class="btn btn-default" type="button" id="bold"><i class="fa fa-bold"></i></button>
-    <button class="btn btn-default" type="button" id="italic"><i class="fa fa-italic"></i></button>
-    <button class="btn btn-default" type="button" id="strikethrough"><i class="fa fa-strikethrough"></i></button>
-    <button class="btn btn-default" type="button" id="link"><i class="fa fa-link"></i></button>
-    <button class="btn btn-default" type="button" id="image"><i class="fa fa-picture-o"></i></button>
-    <!--
-    <button class="btn btn-default" type="button" id="emoji"><i class="fa fa-smile-o"></i></button>
-    <button class="btn btn-default" type="button" id="resource"><i class="fa fa-archive"></i></button>
-    -->
-    <button class="btn btn-default" type="button" id="upload"><i class="fa fa-cloud-upload"></i></button>
-  </div>
   <div id="newsletter-template"></div>
   <!-- IMPORT partials/newsletter-groups.tpl -->
   <div class="form-group">
