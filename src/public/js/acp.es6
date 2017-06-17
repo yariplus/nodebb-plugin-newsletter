@@ -9,6 +9,18 @@ define('admin/plugins/newsletter', [
   const Newsletter = {}
 
   Newsletter.init = () => {
+    let $newsletter = $('#newsletter')
+    let $everyone = $('#checkbox-everyone')
+    let $custom = $('#custom-groups')
+
+    function displayCustomGroups() {
+      if ($everyone[0].checked) {
+        $custom.hide()
+      } else {
+        $custom.show()
+      }
+    }
+
     tinymce.init({
       selector: '#newsletter-template',
       plugins: 'code',
@@ -19,8 +31,6 @@ define('admin/plugins/newsletter', [
       $('#newsletter-modal-subject').html($('#newsletter-subject').val())
       $('#newsletter-modal-body').html(editor.getValue())
     })
-
-    var $newsletter = $('#newsletter')
 
     $('#newsletter-send').click(() => {
       // Append origin to uploaded images/files.
@@ -41,9 +51,13 @@ define('admin/plugins/newsletter', [
         } else {
           app.alertSuccess('Newsletter Sent');
         }
-      });
-    });
-  };
+      })
+    })
+
+    $everyone.on('change', displayCustomGroups)
+
+    displayCustomGroups()
+  }
 
   return Newsletter
 })
