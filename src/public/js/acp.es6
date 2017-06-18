@@ -46,8 +46,9 @@ define('admin/plugins/newsletter', [
       let body = tinymce.activeEditor.getContent()
       let subject = $('#newsletter-subject').val()
       let groups = getSelectedGroups()
+      let override = $('#checkbox-override')[0].checked
 
-      socket.emit('admin.Newsletter.send', {subject, body, groups}, err => {
+      socket.emit('admin.Newsletter.send', {subject, body, groups, override}, err => {
         if (err) {
           app.alertError(err)
         } else {
@@ -59,12 +60,12 @@ define('admin/plugins/newsletter', [
     $everyone.on('change', displayCustomGroups)
 
     if (tinymce.initialized) {
-      tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'newsletter-template')
-      tinymce.EditorManager.execCommand('mceAddEditor', true, 'newsletter-template')
+      tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'newsletter-body')
+      tinymce.EditorManager.execCommand('mceAddEditor', true, 'newsletter-body')
       setupPage()
     } else {
       tinymce.init({
-        selector: '#newsletter-template',
+        selector: '#newsletter-body',
         plugins: [
           'advlist autolink lists link image charmap hr anchor pagebreak',
           'searchreplace wordcount visualblocks visualchars code',

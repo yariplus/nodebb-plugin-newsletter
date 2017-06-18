@@ -65,7 +65,7 @@ export function load (data, callback) {
 
   // The user clicked send on the Newsletter page.
   SioAdmin.Newsletter.send = (socket, data, callback) => {
-    let {subject, body, groups} = data
+    let {subject, body, groups, override} = data
     let count = 0, sets
 
     // Do all the things.
@@ -116,7 +116,7 @@ export function load (data, callback) {
           }
 
           // Skip unsubscribed users.
-          if (!parseInt(user.pluginNewsletterSub, 10)) {
+          if (!parseInt(user.pluginNewsletterSub, 10) && !override) {
             log.info(`UID ${user.uid} is unsubscribed, skipping...`)
             return next(null, false)
           }

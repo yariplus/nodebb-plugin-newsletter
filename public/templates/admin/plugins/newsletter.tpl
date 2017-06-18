@@ -4,15 +4,19 @@
     <label class="form-label" for="newsletter-subject">Subject</label>
     <input class="form-control" id="newsletter-subject" type="text"/>
   </div>
-  <div id="newsletter-template" style="height:700px"></div>
+  <div class="form-group">
+    <label class="form-label" for="newsletter-body">Body</label>
+    <div id="newsletter-body"></div>
+  </div>
   <!-- IMPORT partials/newsletter-groups.tpl -->
+  <div class="form-group">
+  <label class="form-label" for="newsletter-group">Options</label>
+    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="checkbox-override">
+      <input type="checkbox" id="checkbox-override" class="mdl-switch__input">
+      <span class="mdl-switch__label">Override user subscription settings?</span>
+    </label>
+  </div>
   <div class="form-group">
     <button class="btn btn-success" type="button" id="newsletter-send"><i class="fa fa-fw fa-newspaper-o"></i> Send Newsletter</button>
   </div>
 </div>
-
-<style>
-.admin .btn {
-  margin-bottom: 4px;
-}
-</style>
