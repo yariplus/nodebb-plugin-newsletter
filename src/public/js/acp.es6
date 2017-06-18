@@ -11,14 +11,32 @@ define('admin/plugins/newsletter', [
     let $newsletter = $('#newsletter')
     let $everyone = $('#checkbox-everyone')
     let $custom = $('#custom-groups')
+    let $blacklist = $('#newsletter-blacklist')
+    let $blacklistCheck = $('#checkbox-blacklist')
+    let $blacklistForm = $('#newsletter-blacklist-form')
 
     // Fade custom groups on page load or 'everyone' toggle.
-    function displayCustomGroups (next) {
+    function displayCustomGroups () {
       if ($everyone[0].checked) {
-        $custom.fadeOut(next)
+        $custom.fadeOut()
       } else {
-        $custom.fadeIn(next)
+        $custom.fadeIn()
       }
+    }
+
+    // Fade blacklist on option toggle.
+    function displayBlacklist () {
+      if ($blacklistCheck[0].checked) {
+        $blacklistForm.fadeIn()
+      } else {
+        $blacklistForm.fadeOut()
+      }
+    }
+
+    // Display options on page load.
+    function displayOptions () {
+      if ($blacklistCheck[0].checked) $blacklistForm.show()
+      if ($everyone[0].checked) $custom.show()
     }
 
     // Get the names of all selected groups.
@@ -34,21 +52,21 @@ define('admin/plugins/newsletter', [
       return groups
     }
 
-    // Fade in page.
+    // Fade in page on load.
     function setupPage () {
       tinymce.initialized = true
-      displayCustomGroups(() => {
-        $newsletter.fadeIn()
-      })
+      displayOptions()
+      $newsletter.fadeIn()
     }
 
     $('#newsletter-send').click(() => {
-      let body = tinymce.activeEditor.getContent()
       let subject = $('#newsletter-subject').val()
+      let body = tinymce.activeEditor.getContent()
       let groups = getSelectedGroups()
       let override = $('#checkbox-override')[0].checked
+      let blacklist = $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim())
 
-      socket.emit('admin.Newsletter.send', {subject, body, groups, override}, err => {
+      socket.emit('admin.Newsletter.send', {subject, body, groups, override, blacklist}, err => {
         if (err) {
           app.alertError(err)
         } else {
@@ -58,6 +76,7 @@ define('admin/plugins/newsletter', [
     })
 
     $everyone.on('change', displayCustomGroups)
+    $blacklistCheck.on('change', displayBlacklist)
 
     if (tinymce.initialized) {
       tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'newsletter-body')

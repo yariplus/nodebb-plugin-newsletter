@@ -65,7 +65,7 @@ export function load (data, callback) {
 
   // The user clicked send on the Newsletter page.
   SioAdmin.Newsletter.send = (socket, data, callback) => {
-    let {subject, body, groups, override} = data
+    let {subject, body, groups, override, blacklist} = data
     let count = 0, sets
 
     // Do all the things.
@@ -95,7 +95,7 @@ export function load (data, callback) {
         }, (err, results) => {
           if (err) return next(err)
           for (const i in results.fields) {
-            results.fields[i].pluginNewsletterSub = results.settings[i].pluginNewsletterSub
+            results.fields[i].subscribed = !!parseInt(results.settings[i].pluginNewsletterSub, 10)
           }
           next(null, results.fields)
         })
@@ -105,19 +105,27 @@ export function load (data, callback) {
         async.filter(users, (user, next) => {
           // Check for nulls and warn.
           if (!(!!user && user.uid !== void 0 && !!user.email && !!user.username)) {
-            log.warn(`UID ${user.uid} has invalid data, skipping.`)
+            log.warn(`UID ${user.uid} has invalid user data, skipping...`)
             return next(null, false)
           }
 
+          let {uid, email, banned, subscribed} = user
+
           // Skip banned users and warn.
-          if (parseInt(user.banned, 10) === 1) {
-            log.info(`UID ${user.uid} is banned, skipping...`)
+          if (banned) {
+            log.info(`UID ${uid} is banned, skipping...`)
             return next(null, false)
           }
 
           // Skip unsubscribed users.
-          if (!parseInt(user.pluginNewsletterSub, 10) && !override) {
-            log.info(`UID ${user.uid} is unsubscribed, skipping...`)
+          if (!subscribed && !override) {
+            log.info(`UID ${uid} is unsubscribed, skipping...`)
+            return next(null, false)
+          }
+
+          // Skip blacklisted emails.
+          if (blacklist.indexOf(email) !== -1) {
+            log.info(`UID ${uid} (${email}) is blacklisted, skipping...`)
             return next(null, false)
           }
 
@@ -126,33 +134,29 @@ export function load (data, callback) {
         }, (err, users) => {
           count = users ? users.length : 0
 
-          next(null, users)
-        })
-      },
+          // Get the site Title.
+          Meta.configs.get('title', (err, title) => {
+            if (err) return next(err)
 
-      (users, next) => {
-        // Get the site Title.
-        Meta.configs.get('title', (err, title) => {
-          if (err) return next(err)
+            // Send the emails.
+            async.eachLimit(users, 100, (userObj, next) => {
+              let {uid, username, userslug} = userObj
 
-          // Send the emails.
-          async.eachLimit(users, 100, (userObj, next) => {
-            let {uid, username, userslug} = userObj
+              // Email options.
+              const options = {
+                subject,
+                username,
+                body: body.replace('{username}', username),
+                title,
+                userslug,
+                url: nconf.get('url'),
+              }
 
-            // Email options.
-            const options = {
-              subject,
-              username,
-              body: body.replace('{username}', username),
-              title,
-              userslug,
-              url: nconf.get('url'),
-            }
+              Emailer.send('newsletter', uid, options, next)
 
-            Emailer.send('newsletter', uid, options, next)
-
-            // We're done.
-          }, next)
+              // We're done.
+            }, next)
+          })
         })
       }
     ], err => {

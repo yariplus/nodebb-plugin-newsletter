@@ -15,6 +15,14 @@
       <input type="checkbox" id="checkbox-override" class="mdl-switch__input">
       <span class="mdl-switch__label">Override user subscription settings?</span>
     </label>
+    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="checkbox-blacklist">
+      <input type="checkbox" id="checkbox-blacklist" class="mdl-switch__input">
+      <span class="mdl-switch__label">Use email blacklist?</span>
+    </label>
+    <div class="form-group" id="newsletter-blacklist-form" style="display:none;">
+      <label class="form-label" for="newsletter-blacklist">Enter emails to blacklist. Comma/newline/space separated.</label>
+      <textarea class="form-control" rows="5" id="newsletter-blacklist"></textarea>
+    </div>
   </div>
   <div class="form-group">
     <button class="btn btn-success" type="button" id="newsletter-send"><i class="fa fa-fw fa-newspaper-o"></i> Send Newsletter</button>
