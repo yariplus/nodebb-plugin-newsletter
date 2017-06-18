@@ -1,6 +1,14 @@
-import * as NodeBB from './nodebb.js'
+// nodebb-plugin-newsletter
 
-let {db, Emailer, User, Group, Meta, Plugins, SioAdmin, async, winston, nconf} = NodeBB
+import {db, Emailer, User, Group, Meta, Plugins, SioAdmin, async, winston, nconf} from './nodebb.js'
+
+let path = require('path')
+
+let ex
+
+try {
+  ex = require(path.join(path.dirname(module.parent.filename), '../node_modules/nodebb-plugin-emoji-extended/lib/sets/active.js'))
+} catch (e) {}
 
 const log = {
   info (msg) { winston.info(`[Newsletter] ${msg}`) },
@@ -51,7 +59,7 @@ export function load (data, callback) {
   router.get('/admin/plugins/newsletter', middleware.admin.buildHeader, render)
   router.get('/api/admin/plugins/newsletter', render)
 
-  SioAdmin.Newsletter = { }
+  SioAdmin.Newsletter = {}
 
   // The user clicked send on the Newsletter page.
   SioAdmin.Newsletter.send = (socket, data, callback) => {
@@ -153,6 +161,29 @@ export function load (data, callback) {
         callback(null, {html: html})
       })
     })
+  }
+
+  SioAdmin.Newsletter.getSmileys = (socket, data, callback) => {
+    if (!ex || !ex.sets.length) return callback(null, [[]])
+
+    let smileys = []
+
+    ex.sets.forEach(set => {
+      let sSet = []
+      let sPath = ex.urls[set.id][0]
+      let sExt = ex.urls[set.id][2]
+
+      set.list.forEach(img => {
+        let url = sPath + img.file + sExt
+        let title = img.id
+
+        sSet.push({url, title})
+      })
+
+      smileys.push(sSet)
+    })
+
+    callback(null, smileys)
   }
 
   // End of app.load

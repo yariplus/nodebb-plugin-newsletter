@@ -13,7 +13,7 @@ define('admin/plugins/newsletter', [
     let $everyone = $('#checkbox-everyone')
     let $custom = $('#custom-groups')
 
-    function displayCustomGroups(next) {
+    function displayCustomGroups (next) {
       if ($everyone[0].checked) {
         $custom.fadeOut(next)
       } else {
@@ -21,29 +21,16 @@ define('admin/plugins/newsletter', [
       }
     }
 
-    $('#newsletter-preview').click(() => {
-      $('#newsletter-modal-subject').html($('#newsletter-subject').val())
-      $('#newsletter-modal-body').html(tinymce.activeEditor.getContent())
-    })
-
     $('#newsletter-send').click(() => {
-      // Append origin to uploaded images/files.
-      var body = editor.getValue();
-      var port = window.location.port ? ':' + window.location.port : '';
-      var origin = window.location.protocol + '//' + window.location.hostname + port;
+      let body = tinymce.activeEditor.getContent()
+      let subject = $('#newsletter-subject').val()
+      let groups = getSelectedGroups()
 
-      body = body.replace(new RegExp('(href="' + config.relative_path + ')(/)', 'gi'), '$1' + origin + '$2');
-      body = body.replace(new RegExp('(src="' + config.relative_path + ')(/)', 'gi'), '$1' + origin + '$2');
-
-      socket.emit('admin.Newsletter.send', {
-        subject: $('#newsletter-subject').val(),
-        template: body,
-        group: $('#newsletter-group').val()
-      }, function (err) {
+      socket.emit('admin.Newsletter.send', {subject, body, groups}, err => {
         if (err) {
           app.alertError(err);
         } else {
-          app.alertSuccess('Newsletter Sent');
+          app.alertSuccess('Newsletter Sent Successfully!');
         }
       })
     })
@@ -53,18 +40,18 @@ define('admin/plugins/newsletter', [
     tinymce.init({
       selector: '#newsletter-template',
       plugins: [
-        'advlist autolink lists link image charmap preview hr anchor pagebreak',
+        'advlist autolink lists link image charmap hr anchor pagebreak',
         'searchreplace wordcount visualblocks visualchars code',
         'insertdatetime media nonbreaking contextmenu',
         'textpattern imagetools',
-        'autoresize textcolor colorpicker smileys table directionality',
+        'autoresize textcolor colorpicker table directionality',
       ],
-      toolbar: 'undo redo | insert smileys | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | ltr rtl | code preview | help',
+      toolbar: 'undo redo | insert | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | ltr rtl | code',
       menubar: '',
       autoresize_bottom_margin: 0,
       autoresize_min_height: 360,
       resize: false,
-      setup: (editor) => {
+      setup: editor => {
         editor.on('init', () => {
           displayCustomGroups(() => {
             $newsletter.fadeIn()
