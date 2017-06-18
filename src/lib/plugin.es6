@@ -63,7 +63,8 @@ export function load (data, callback) {
 
   // The user clicked send on the Newsletter page.
   SioAdmin.Newsletter.send = (socket, data, callback) => {
-    let count = 0
+    let {subject, body, groups} = data
+    let count = 0, sets
 
     // Do all the things.
     async.waterfall([
@@ -71,13 +72,20 @@ export function load (data, callback) {
         // Send an alert.
         log.info(`UID ${socket.uid} is attempting to send a newsletter.`)
 
-        // Set the correct group.
-        data.group = data.group === 'everyone' ? 'users:joindate' : `group:${data.group}:members`
-        log.info(`Sending to group "${data.group}"`)
+        // Map group names to sets.
+        if (groups.indexOf('everyone') !== -1) {
+          sets = ['users:joindate']
+          groups = 'everyone'
+        } else {
+          sets = groups.map(name => `group:${name}:members`)
+        }
 
-        // Get the group uids.
-        db.getSortedSetRange(data.group, 0, -1, next)
+        log.info(`Sending newsletter to groups: "${groups}"`)
+
+        // Get the sets uids.
+        db.getSortedSetUnion({sets, start: 0, stop: -1}, next)
       },
+
       (uids, next) => {
         async.parallel({
           fields: async.apply(User.getUsersFields, uids, ['uid', 'email', 'username', 'userslug', 'banned']),
@@ -96,25 +104,25 @@ export function load (data, callback) {
           // Check for nulls and warn.
           if (!(!!user && user.uid !== void 0 && !!user.email && !!user.username)) {
             log.warn(`UID ${user.uid} has invalid data, skipping.`)
-            return next(false)
+            return next(null, false)
           }
 
           // Skip banned users and warn.
           if (parseInt(user.banned, 10) === 1) {
             log.info(`UID ${user.uid} is banned, skipping...`)
-            return next(false)
+            return next(null, false)
           }
 
           // Skip unsubscribed users.
           if (!parseInt(user.pluginNewsletterSub, 10)) {
             log.info(`UID ${user.uid} is unsubscribed, skipping...`)
-            return next(false)
+            return next(null, false)
           }
 
           // User is valid.
-          return next(true)
-        }, users => {
-          count = users.length
+          next(null, true)
+        }, (err, users) => {
+          count = users ? users.length : 0
 
           next(null, users)
         })
@@ -127,17 +135,19 @@ export function load (data, callback) {
 
           // Send the emails.
           async.eachLimit(users, 100, (userObj, next) => {
+            let {uid, username, userslug} = userObj
+
             // Email options.
             const options = {
-              subject: data.subject,
-              username: userObj.username,
-              body: data.template.replace('{username}', userObj.username),
+              subject,
+              username,
+              body: body.replace('{username}', username),
               title,
-              userslug: userObj.userslug,
-              url: nconf.get('url')
+              userslug,
+              url: nconf.get('url'),
             }
 
-            Emailer.send('newsletter', userObj.uid, options, next)
+            Emailer.send('newsletter', uid, options, next)
 
             // We're done.
           }, next)

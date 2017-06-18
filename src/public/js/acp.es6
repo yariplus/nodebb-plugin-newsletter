@@ -21,6 +21,25 @@ define('admin/plugins/newsletter', [
       }
     }
 
+    function getSelectedGroups () {
+      let groups = []
+
+      $('.nl-group').each((i, el) => {
+        if (el.checked) {
+          groups.push(el.id.split('checkbox-')[1])
+        }
+      })
+
+      return groups
+    }
+
+    function setupPage () {
+      tinymce.initialized = true
+      displayCustomGroups(() => {
+        $newsletter.fadeIn()
+      })
+    }
+
     $('#newsletter-send').click(() => {
       let body = tinymce.activeEditor.getContent()
       let subject = $('#newsletter-subject').val()
@@ -28,37 +47,39 @@ define('admin/plugins/newsletter', [
 
       socket.emit('admin.Newsletter.send', {subject, body, groups}, err => {
         if (err) {
-          app.alertError(err);
+          app.alertError(err)
         } else {
-          app.alertSuccess('Newsletter Sent Successfully!');
+          app.alertSuccess('Newsletter Sent Successfully!')
         }
       })
     })
 
     $everyone.on('change', displayCustomGroups)
 
-    tinymce.init({
-      selector: '#newsletter-template',
-      plugins: [
-        'advlist autolink lists link image charmap hr anchor pagebreak',
-        'searchreplace wordcount visualblocks visualchars code',
-        'insertdatetime media nonbreaking contextmenu',
-        'textpattern imagetools',
-        'autoresize textcolor colorpicker table directionality',
-      ],
-      toolbar: 'undo redo | insert | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | ltr rtl | code',
-      menubar: '',
-      autoresize_bottom_margin: 0,
-      autoresize_min_height: 360,
-      resize: false,
-      setup: editor => {
-        editor.on('init', () => {
-          displayCustomGroups(() => {
-            $newsletter.fadeIn()
-          })
-        })
-      },
-    })
+    if (tinymce.initialized) {
+      tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'newsletter-template')
+      tinymce.EditorManager.execCommand('mceAddEditor', true, 'newsletter-template')
+      setupPage()
+    } else {
+      tinymce.init({
+        selector: '#newsletter-template',
+        plugins: [
+          'advlist autolink lists link image charmap hr anchor pagebreak',
+          'searchreplace wordcount visualblocks visualchars code',
+          'insertdatetime media nonbreaking contextmenu',
+          'textpattern imagetools',
+          'autoresize textcolor colorpicker table directionality',
+        ],
+        toolbar: 'undo redo | insert | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | ltr rtl | code',
+        menubar: '',
+        autoresize_bottom_margin: 0,
+        autoresize_min_height: 360,
+        resize: false,
+        setup: editor => {
+          editor.on('init', setupPage)
+        },
+      })
+    }
   }
 
   return Newsletter
