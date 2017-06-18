@@ -2,8 +2,7 @@
 
 define('admin/plugins/newsletter', [
   'translator',
-  'uploader',
-  'ace/ext-language_tools',
+  'uploader', // WIP
   '/plugins/nodebb-plugin-newsletter/public/tinymce/tinymce.min.js',
   ], (translator, uploader) => {
   const Newsletter = {}
@@ -13,6 +12,7 @@ define('admin/plugins/newsletter', [
     let $everyone = $('#checkbox-everyone')
     let $custom = $('#custom-groups')
 
+    // Fade custom groups on page load or 'everyone' toggle.
     function displayCustomGroups (next) {
       if ($everyone[0].checked) {
         $custom.fadeOut(next)
@@ -21,6 +21,7 @@ define('admin/plugins/newsletter', [
       }
     }
 
+    // Get the names of all selected groups.
     function getSelectedGroups () {
       let groups = []
 
@@ -33,6 +34,7 @@ define('admin/plugins/newsletter', [
       return groups
     }
 
+    // Fade in page.
     function setupPage () {
       tinymce.initialized = true
       displayCustomGroups(() => {

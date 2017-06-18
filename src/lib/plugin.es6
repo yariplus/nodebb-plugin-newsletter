@@ -1,15 +1,15 @@
 // nodebb-plugin-newsletter
 
-import {db, Emailer, User, Group, Meta, Plugins, SioAdmin, async, winston, nconf} from './nodebb.js'
+// Import base modules.
+import {db, Emailer, User, Meta, Plugins, SioAdmin, async, winston, nconf, path} from './nodebb.js'
 
-let path = require('path')
-
+// Import emoji-extended active sets module.
 let ex
-
 try {
   ex = require(path.join(path.dirname(module.parent.filename), '../node_modules/nodebb-plugin-emoji-extended/lib/sets/active.js'))
 } catch (e) {}
 
+// Prettify log output.
 const log = {
   info (msg) { winston.info(`[Newsletter] ${msg}`) },
   warn (msg) { winston.warn(`[Newsletter] ${msg}`) }
@@ -21,6 +21,7 @@ export function load (data, callback) {
 
   const {app, router, middleware} = data
 
+  // Get the names of all memeber groups.
   function getGroups (next) {
     db.getSortedSetRevRange('groups:createtime', 0, -1, (err, groups) => {
       if (err) {
@@ -46,10 +47,11 @@ export function load (data, callback) {
     })
   }
 
+  // Render admin page.
   function render (req, res, next) {
     getGroups ((err, groups) => {
       if (!err) {
-        res.render('admin/plugins/newsletter', {groups: groups})
+        res.render('admin/plugins/newsletter', {groups})
       } else {
         res.send(`Error: ${err}`)
       }
@@ -165,14 +167,16 @@ export function load (data, callback) {
     })
   }
 
+  // Render groups list for in-topic sending.
   SioAdmin.Newsletter.getGroupsList = (socket, data, callback) => {
     getGroups((err, groups) => {
-      const html = app.render('partials/newsletter-groups', {groups: groups}, (err, html) => {
-        callback(null, {html: html})
+      app.render('partials/newsletter-groups', {groups}, (err, html) => {
+        callback(err, {html})
       })
     })
   }
 
+  // Import emoji-extended sets.
   SioAdmin.Newsletter.getSmileys = (socket, data, callback) => {
     if (!ex || !ex.sets.length) return callback(null, [[]])
 
@@ -242,6 +246,7 @@ export function actionSaveSettings (data, next) {
 
 const dev = process.env.NODE_ENV === 'development'
 
+// Hack for ES6 coverage.
 export function __interopRequireWildcard (obj) {
   return eval('_interopRequireWildcard')(obj)
 }
