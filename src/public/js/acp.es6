@@ -64,7 +64,7 @@ define('admin/plugins/newsletter', [
       let body = tinymce.activeEditor.getContent()
       let groups = getSelectedGroups()
       let override = $('#checkbox-override')[0].checked
-      let blacklist = $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim())
+      let blacklist = $blacklistCheck[0].checked ? $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
 
       socket.emit('admin.Newsletter.send', {subject, body, groups, override, blacklist}, err => {
         if (err) {
