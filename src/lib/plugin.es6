@@ -68,6 +68,9 @@ export function load (data, callback) {
     let {subject, body, groups, override, blacklist} = data
     let count = 0, sets
 
+    // Set the blacklist value.
+    if (blacklist.length) db.set('plugin-newsletter:blacklist', blacklist)
+
     // Do all the things.
     async.waterfall([
       next => {
@@ -204,6 +207,10 @@ export function load (data, callback) {
     })
 
     callback(null, smileys)
+  }
+
+  SioAdmin.Newsletter.getBlacklist = (socket, data, next) => {
+    db.get('plugin-newsletter:blacklist', next)
   }
 
   // End of app.load

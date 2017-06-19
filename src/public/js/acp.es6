@@ -60,23 +60,32 @@ define('admin/plugins/newsletter', [
     }
 
     $('#newsletter-send').click(() => {
-      let subject = $('#newsletter-subject').val()
-      let body = tinymce.activeEditor.getContent()
-      let groups = getSelectedGroups()
-      let override = $('#checkbox-override')[0].checked
-      let blacklist = $blacklistCheck[0].checked ? $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
+      bootbox.confirm('Are you sure you want to send this newsletter?', okay => {
+        if (!okay) return
 
-      socket.emit('admin.Newsletter.send', {subject, body, groups, override, blacklist}, err => {
-        if (err) {
-          app.alertError(err)
-        } else {
-          app.alertSuccess('Newsletter Sent Successfully!')
-        }
+        let subject = $('#newsletter-subject').val()
+        let body = tinymce.activeEditor.getContent()
+        let groups = getSelectedGroups()
+        let override = $('#checkbox-override')[0].checked
+        let blacklist = $blacklistCheck[0].checked ? $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
+
+        socket.emit('admin.Newsletter.send', {subject, body, groups, override, blacklist}, err => {
+          if (err) {
+            app.alertError(err)
+          } else {
+            app.alertSuccess('Newsletter Sent Successfully!')
+          }
+        })
       })
     })
 
     $everyone.on('change', displayCustomGroups)
     $blacklistCheck.on('change', displayBlacklist)
+
+    // Load saved blacklist.
+    socket.emit('admin.Newsletter.getBlacklist', {}, (err, blacklist) => {
+      if (!err && blacklist) $blacklist.val(blacklist)
+    })
 
     if (tinymce.initialized) {
       tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'newsletter-body')
