@@ -1,4 +1,4 @@
-<div id="newsletter" style="display:none;">
+<div id="newsletter" class="admin">
   <h1><i class="fa fa-fw fa-newspaper-o"></i> Newsletter</h1>
   <div class="form-group">
     <label class="form-label" for="newsletter-subject">Subject</label>

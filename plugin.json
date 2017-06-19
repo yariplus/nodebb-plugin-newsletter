@@ -16,6 +16,12 @@
   "acpScripts": [
     "public/js/acp.js"
   ],
+  "less": [
+    "public/less/style.less"
+  ],
+  "acpLess": [
+    "public/less/style.less"
+  ],
   "hooks": [
     { "hook": "static:app.load",            "method": "load" },
     { "hook": "filter:admin.header.build",  "method": "adminHeader" },

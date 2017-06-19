@@ -33,12 +33,6 @@ define('admin/plugins/newsletter', [
       }
     }
 
-    // Display options on page load.
-    function displayOptions () {
-      if ($blacklistCheck[0].checked) $blacklistForm.show()
-      if ($everyone[0].checked) $custom.show()
-    }
-
     // Get the names of all selected groups.
     function getSelectedGroups () {
       let groups = []
@@ -50,6 +44,12 @@ define('admin/plugins/newsletter', [
       })
 
       return groups
+    }
+
+    // Display options on page load.
+    function displayOptions () {
+      if ($blacklistCheck[0].checked) $blacklistForm.show()
+      if ($everyone[0].checked) $custom.hide()
     }
 
     // Fade in page on load.

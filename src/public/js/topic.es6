@@ -39,7 +39,7 @@ $(() => {
 
         bootbox.dialog({
           title: subject,
-          message: `${body}<hr>${optionsHtml}`,
+          message: `${body}<hr><div id="newsletter">${optionsHtml}</div>`,
           size: 'large',
           buttons: {
             send: {
