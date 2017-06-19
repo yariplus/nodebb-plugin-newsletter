@@ -171,11 +171,13 @@ export function load (data, callback) {
     })
   }
 
-  // Render groups list for in-topic sending.
-  SioAdmin.Newsletter.getGroupsList = (socket, data, callback) => {
+  // Render options list for in-topic sending.
+  SioAdmin.Newsletter.getOptionsHtml = (socket, data, callback) => {
     getGroups((err, groups) => {
-      app.render('partials/newsletter-groups', {groups}, (err, html) => {
-        callback(err, {html})
+      app.render('partials/newsletter-groups', {groups}, (err, groupsHtml) => {
+        app.render('partials/newsletter-options', {}, (err, optionsHtml) => {
+          callback(err, groupsHtml + optionsHtml)
+        })
       })
     })
   }

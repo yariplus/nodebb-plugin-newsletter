@@ -1,77 +1,111 @@
-/* global socket, config, ajaxify, app */
+/* global socket, config, app */
 
 $(() => {
-  $(window).on('action:composer.loaded', (err, data) => {
+  $(window).on('action:composer.loaded', (event, data) => {
+    if (!app.user.isAdmin) return
     if (data.hasOwnProperty('composerData') && !data.composerData.isMain) {
       // Do nothing, as this is a reply, not a new post
       return
     }
 
-    if (!app.user.isAdmin) return
+    let {post_uuid} = data
+    let $item = $('<li><a href="#"><i class="fa fa-fw fa-newspaper-o"></i> Send as Newsletter</a></li>')
+    let $composer = $(`#cmp-uuid-${post_uuid}`)
+    let $dropdown = $composer.find('.action-bar .dropdown-menu')
 
-    const item = $('<li><a href="#"><i class="fa fa-fw fa-newspaper-o"></i> Send as Newsletter</a></li>')
-    let dropdownEl = $('#cmp-uuid-' + data.post_uuid + ' .action-bar .dropdown-menu')
+    if (!$dropdown.length) {
+      let $submit = $composer.find('.composer-submit')
 
-    if (!dropdownEl.length) {
-      const submitEl = $('#cmp-uuid-' + data.post_uuid + ' .composer-submit')
+      $submit.after('<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">[[modules:composer.toggle_dropdown]]</span></button>')
+      $submit.after('<ul class="dropdown-menu pull-right" role="menu"></ul>')
 
-      submitEl.after('<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">[[modules:composer.toggle_dropdown]]</span></button>')
-      submitEl.after('<ul class="dropdown-menu pull-right" role="menu"></ul>')
-
-      dropdownEl = $('#cmp-uuid-' + data.post_uuid + ' .action-bar .dropdown-menu')
+      $dropdown = $composer.find('.action-bar .dropdown-menu')
+      $dropdown.append($item)
     }
 
-    let groupsHtml = ''
-    socket.emit('admin.Newsletter.getGroupsList', {}, (err, data) => {
-      if (err) return console.log(`getGroupsList socket err: ${err.message}`)
-      groupsHtml = data.html
-    })
+    socket.emit('admin.Newsletter.getOptionsHtml', {}, (err, optionsHtml) => {
+      if (err) return console.log(`getOptionsHtml socket err: ${err.message}`)
 
-    if (config['newsletter']) {
-      // TODO
-    }
+      $item.on('click', () => {
+        let subject = $composer.find('.title').val() || 'Newsletter Subject'
+        let body = $composer.find('.preview').html() || 'Newsletter Body'
 
-    dropdownEl.append(item)
+        // Append origin to uploaded images/files.
+        let port = window.location.port ? `:${window.location.port}` : ''
+        let origin = `${window.location.protocol}//${window.location.hostname}${port}`
 
-    item.on('click', () => {
-      const title = $(`#cmp-uuid-${data.post_uuid}`).find('.title').val() || 'Newsletter Title'
-      let body = $(`#cmp-uuid-${data.post_uuid}`).find('.preview').html() || 'Newsletter Body'
+        body = body.replace(new RegExp(`(href="${config.relative_path})(\/)`, 'gi'), `$1${origin}$2`)
+        body = body.replace(new RegExp(`(src="${config.relative_path})(\/)`, 'gi'), `$1${origin}$2`)
 
-      // Append origin to uploaded images/files.
-      let port = window.location.port ? `:${window.location.port}` : ''
-      let origin = `${window.location.protocol}//${window.location.hostname}${port}`
+        bootbox.dialog({
+          title: subject,
+          message: `${body}<hr>${optionsHtml}`,
+          size: 'large',
+          buttons: {
+            send: {
+              label: "Send Newsletter",
+              className: "btn-success",
+              callback: () => {
+                let groups = getSelectedGroups()
+                let override = $('#checkbox-override')[0].checked
+                let blacklist = $blacklistCheck[0].checked ? $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
 
-      body = body.replace(new RegExp(`(href="${config.relative_path})(\/)`, 'gi'), `$1${origin}$2`)
-      body = body.replace(new RegExp(`(src="${config.relative_path})(\/)`, 'gi'), `$1${origin}$2`)
-
-      bootbox.dialog({
-        title: title,
-        message: `${body}<hr>${groupsHtml}`,
-        size: 'large',
-        buttons: {
-          send: {
-            label: "Send Newsletter",
-            className: "btn-success",
-            callback: () => {
-              socket.emit('admin.Newsletter.send', {
-                subject: title,
-                template: body,
-                group: $('#newsletter-group').val()
-              }, err => {
-                if (err) {
-                  app.alertError(err)
-                } else {
-                  app.alertSuccess('Newsletter Sent')
-                }
-              })
+                socket.emit('admin.Newsletter.send', {subject, body, groups, override, blacklist}, err => {
+                  if (err) {
+                    app.alertError(err)
+                  } else {
+                    app.alertSuccess('Newsletter Sent')
+                  }
+                })
+              }
+            },
+            cancel: {
+              label: "Cancel",
+              className: "btn-default",
+              callback: () => {}
             }
-          },
-          cancel: {
-            label: "Cancel",
-            className: "btn-default",
-            callback: () => {}
+          }
+        })
+
+        let $everyone = $('#checkbox-everyone')
+        let $custom = $('#custom-groups')
+        let $blacklist = $('#newsletter-blacklist')
+        let $blacklistCheck = $('#checkbox-blacklist')
+        let $blacklistForm = $('#newsletter-blacklist-form')
+
+        // Fade custom groups on page load or 'everyone' toggle.
+        function displayCustomGroups () {
+          if ($everyone[0].checked) {
+            $custom.fadeOut()
+          } else {
+            $custom.fadeIn()
           }
         }
+
+        // Fade blacklist on option toggle.
+        function displayBlacklist () {
+          if ($blacklistCheck[0].checked) {
+            $blacklistForm.fadeIn()
+          } else {
+            $blacklistForm.fadeOut()
+          }
+        }
+
+        // Get the names of all selected groups.
+        function getSelectedGroups () {
+          let groups = []
+
+          $('.nl-group').each((i, el) => {
+            if (el.checked) {
+              groups.push(el.id.split('checkbox-')[1])
+            }
+          })
+
+          return groups
+        }
+
+        $everyone.on('change', displayCustomGroups)
+        $blacklistCheck.on('change', displayBlacklist)
       })
     })
   })
