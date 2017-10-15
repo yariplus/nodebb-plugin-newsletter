@@ -114,8 +114,10 @@ export function load (data, callback) {
 
           let {uid, email, banned, subscribed} = user
 
+          banned = parseInt(banned, 10) === 1
+
           // Skip banned users and warn.
-          if (banned) {
+          if (!!banned) {
             log.info(`UID ${uid} is banned, skipping...`)
             return next(null, false)
           }
