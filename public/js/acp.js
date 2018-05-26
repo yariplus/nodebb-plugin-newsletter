@@ -1,3 +1,6 @@
+// nodebb-plugin-newsletter
+// Admin script.
+
 /* global define, $, app, socket, tinymce, bootbox */
 
 define('admin/plugins/newsletter', [
