@@ -1,10 +1,10 @@
-/* global define, $, app, config, socket */
+/* global define, $, app, socket, tinymce, bootbox */
 
 define('admin/plugins/newsletter', [
   'translator',
   'uploader', // WIP
-  '/plugins/nodebb-plugin-newsletter/public/tinymce/tinymce.min.js',
-  ], (translator, uploader) => {
+  '/plugins/nodebb-plugin-newsletter/public/tinymce/tinymce.min.js'
+], (translator, uploader) => {
   const Newsletter = {}
 
   Newsletter.init = () => {
@@ -99,7 +99,7 @@ define('admin/plugins/newsletter', [
           'searchreplace wordcount visualblocks visualchars code',
           'insertdatetime media nonbreaking contextmenu',
           'textpattern imagetools',
-          'autoresize textcolor colorpicker table directionality',
+          'autoresize textcolor colorpicker table directionality'
         ],
         toolbar: 'undo redo | insert | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | ltr rtl | code',
         menubar: '',
@@ -108,7 +108,7 @@ define('admin/plugins/newsletter', [
         resize: false,
         setup: editor => {
           editor.on('init', setupPage)
-        },
+        }
       })
     }
   }

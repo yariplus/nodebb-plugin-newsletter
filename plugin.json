@@ -3,13 +3,9 @@
   "name": "NodeBB Plugin Newsletter",
   "description": "Send an email newsletter to all users or a group of users.",
   "url": "https://github.com/yariplus/nodebb-plugin-newsletter",
-  "library": "lib/plugin.js",
+  "library": "lib/index.js",
   "templates": "public/templates",
   "languages": "public/language",
-  "defaultLang": "en-GB",
-  "staticDirs": {
-    "public": "public"
-  },
   "scripts": [
     "public/js/topic.js"
   ],

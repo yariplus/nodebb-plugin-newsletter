@@ -1,4 +1,5 @@
-/* global socket, config, app */
+/* global $, bootbox, socket, config, app */
+/* eslint-disable no-useless-escape */
 
 $(() => {
   $(window).on('action:composer.loaded', (event, data) => {
@@ -8,9 +9,8 @@ $(() => {
       return
     }
 
-    let {post_uuid} = data
     let $item = $('<li><a href="#"><i class="fa fa-fw fa-newspaper-o"></i> Send as Newsletter</a></li>')
-    let $composer = $(`#cmp-uuid-${post_uuid}`)
+    let $composer = $(`#cmp-uuid-${data.post_uuid}`)
     let $dropdown = $composer.find('.action-bar .dropdown-menu')
 
     if (!$dropdown.length) {
@@ -43,8 +43,8 @@ $(() => {
           size: 'large',
           buttons: {
             send: {
-              label: "Send Newsletter",
-              className: "btn-success",
+              label: 'Send Newsletter',
+              className: 'btn-success',
               callback: () => {
                 let groups = getSelectedGroups()
                 let override = $('#checkbox-override')[0].checked
@@ -60,8 +60,8 @@ $(() => {
               }
             },
             cancel: {
-              label: "Cancel",
-              className: "btn-default",
+              label: 'Cancel',
+              className: 'btn-default',
               callback: () => {}
             }
           }
