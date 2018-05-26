@@ -6,7 +6,7 @@
 
 $(window).on('action:composer.loaded', (event, data) => {
   if (!app.user.isAdmin) return // Only Admins can send newsletters.
-  if (!data.composerData || !data.composerData.isMain) // This is not a new topic.
+  if (!data.composerData || !data.composerData.isMain) return // This is not a new topic.
 
   let $item = $('<li><a href="#"><i class="fa fa-fw fa-newspaper-o"></i> Send as Newsletter</a></li>')
   let $composer = $(`#cmp-uuid-${data.post_uuid}`)
@@ -51,6 +51,8 @@ $(window).on('action:composer.loaded', (event, data) => {
               let groups = getSelectedGroups()
               let override = $('#checkbox-override')[0].checked
               let blacklist = $blacklistCheck[0].checked ? $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
+
+              if (!groups.length) return app.alertError(new Error('No groups selected.'))
 
               socket.emit('admin.Newsletter.send', {subject, body, groups, override, blacklist}, err => {
                 if (err) {

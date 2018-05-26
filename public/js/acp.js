@@ -6,7 +6,7 @@
 define('admin/plugins/newsletter', [
   'translator',
   'uploader', // WIP
-  '/plugins/nodebb-plugin-newsletter/public/tinymce/tinymce.min.js'
+  '/plugins/nodebb-plugin-newsletter/tinymce/tinymce.min.js'
 ], (translator, uploader) => {
   const Newsletter = {}
 
@@ -71,6 +71,8 @@ define('admin/plugins/newsletter', [
         let groups = getSelectedGroups()
         let override = $('#checkbox-override')[0].checked
         let blacklist = $blacklistCheck[0].checked ? $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
+
+        if (!groups.length) return app.alertError(new Error('No groups selected.'))
 
         socket.emit('admin.Newsletter.send', {subject, body, groups, override, blacklist}, err => {
           if (err) {
