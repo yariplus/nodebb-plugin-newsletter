@@ -26,6 +26,7 @@
     { "hook": "filter:admin.header.build",  "method": "adminHeader" },
     { "hook": "filter:user.customSettings", "method": "filterUserCustomSettings" },
     { "hook": "filter:user.getSettings",    "method": "filterUserGetSettings" },
-    { "hook": "action:user.saveSettings",   "method": "actionSaveSettings" }
+    { "hook": "action:user.saveSettings",   "method": "actionSaveSettings" },
+    { "hook": "filter:email.modify",        "method": "filterEmailModify" }
   ]
 }

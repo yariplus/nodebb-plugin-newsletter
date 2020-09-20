@@ -71,10 +71,18 @@ define('admin/plugins/newsletter', [
         let groups = getSelectedGroups()
         let override = $('#checkbox-override')[0].checked
         let blacklist = $blacklistCheck[0].checked ? $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
+        let prefixTitle = $('#checkbox-prefix-title')[0].checked
 
         if (!groups.length) return app.alertError(new Error('No groups selected.'))
 
-        socket.emit('admin.Newsletter.send', {subject, body, groups, override, blacklist}, err => {
+        socket.emit('admin.Newsletter.send', {
+          subject,
+          body,
+          groups,
+          override,
+          blacklist,
+          prefixTitle,
+        }, err => {
           if (err) {
             app.alertError(err)
           } else {
