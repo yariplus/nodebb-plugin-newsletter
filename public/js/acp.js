@@ -114,6 +114,9 @@ define('admin/plugins/newsletter', [
           'textpattern imagetools',
           'autoresize textcolor colorpicker table directionality'
         ],
+        relative_urls: false,
+        remove_script_host: false,
+        document_base_url: location.origin + '/',
         toolbar: 'undo redo | insert | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | ltr rtl | code',
         menubar: '',
         autoresize_bottom_margin: 0,
