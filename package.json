@@ -22,7 +22,7 @@
     "name": "Timothy Fike",
     "email": "tafike@gmail.com"
   },
-  "license": "(CC0-1.0 OR MIT)",
+  "license": "MIT-0",
   "bugs": {
     "url": "https://github.com/yariplus/nodebb-plugin-newsletter/issues"
   },
