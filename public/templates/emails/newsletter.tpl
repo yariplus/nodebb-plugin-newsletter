@@ -9,8 +9,12 @@
   <tr>
     <td style="padding: 40px 10px;width: 100%;font-size: 12px; font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol; line-height:18px; text-align: center; color: #888888;">
       <br><br>
+<!-- IF override -->
+        [[newsletter:unsub.override]]
+<!-- ELSE -->
         [[newsletter:unsub.info]] <a href="{url}/uid/{uid}/settings">[[email:unsub.cta]]</a>.
         <br />[[email:notif.post.unsub.one-click]] <a href="{unsubUrl}">[[email:unsubscribe]]</a>.
+<!-- ENDIF override -->
       <br><br>
     </td>
   </tr>
