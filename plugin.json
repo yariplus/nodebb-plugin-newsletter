@@ -27,6 +27,7 @@
     { "hook": "filter:user.customSettings", "method": "filterUserCustomSettings" },
     { "hook": "filter:user.getSettings",    "method": "filterUserGetSettings" },
     { "hook": "action:user.saveSettings",   "method": "actionSaveSettings" },
+    { "hook": "filter:email.params",        "method": "filterEmailParams" },
     { "hook": "filter:email.modify",        "method": "filterEmailModify" }
   ]
 }
