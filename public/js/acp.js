@@ -5,8 +5,7 @@
 
 define('admin/plugins/newsletter', [
   'translator',
-  'uploader', // WIP
-  '/plugins/nodebb-plugin-newsletter/tinymce/tinymce.min.js'
+  'uploader'
 ], (translator, uploader) => {
   const Newsletter = {}
 
@@ -107,13 +106,7 @@ define('admin/plugins/newsletter', [
     } else {
       tinymce.init({
         selector: '#newsletter-body',
-        plugins: [
-          'advlist autolink lists link image charmap hr anchor pagebreak',
-          'searchreplace wordcount visualblocks visualchars code',
-          'insertdatetime media nonbreaking contextmenu',
-          'textpattern imagetools',
-          'autoresize textcolor colorpicker table directionality'
-        ],
+        plugins: 'advlist autolink lists link image charmap hr anchor pagebreak searchreplace wordcount visualblocks visualchars code insertdatetime media nonbreaking contextmenu textpattern imagetools autoresize textcolor colorpicker table directionality',
         relative_urls: false,
         remove_script_host: false,
         document_base_url: location.origin + '/',

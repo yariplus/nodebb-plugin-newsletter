@@ -12,9 +12,9 @@
   "scripts": [
     "public/js/topic.js"
   ],
-  "acpScripts": [
-    "public/js/acp.js"
-  ],
+  "modules": {
+    "../admin/plugins/newsletter.js": "./public/js/acp.js"
+	},
   "less": [
     "public/less/style.less"
   ],

@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/yariplus/nodebb-plugin-newsletter",
   "nbbpm": {
-    "compatibility": "^1.0.0"
+    "compatibility": "^2.0.0"
   },
   "standard": {
     "ignore": [
@@ -55,3 +55,4 @@
     "watch": "^0.18.0"
   }
 }
+
