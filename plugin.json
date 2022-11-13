@@ -6,9 +6,6 @@
   "library": "lib/index.js",
   "templates": "public/templates",
   "languages": "public/language",
-  "staticDirs": {
-    "tinymce": "public/tinymce"
-  },
   "scripts": [
     "public/js/topic.js"
   ],
