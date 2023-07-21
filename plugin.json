@@ -12,11 +12,11 @@
   "modules": {
     "../admin/plugins/newsletter.js": "./public/js/acp.js"
 	},
-  "less": [
-    "public/less/style.less"
+  "scss": [
+    "public/scss/style.scss"
   ],
-  "acpLess": [
-    "public/less/style.less"
+  "acpScss": [
+    "public/scss/style.scss"
   ],
   "hooks": [
     { "hook": "static:app.load",            "method": "load" },
