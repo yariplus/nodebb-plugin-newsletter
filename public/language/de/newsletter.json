@@ -2,5 +2,6 @@
 	"send.as.newsletter": "Als Newsletter senden",
 	"sub-setting": "Newsletter",
 	"sub": "Newsletter empfangen",
-	"unsub.info": "Dieser Newsletter wurde dir aufgrund deiner Abonnementeinstellungen geschickt."
+	"unsub.info": "Dieser Newsletter wurde dir aufgrund deiner Abonnementeinstellungen geschickt.",
+	"unsub.override": "Dieser Newsletter wurde von einem Forenadministrator an dich gesendet und entspricht nicht deinen normalen Abonnementeinstellungen."
 }

@@ -3,5 +3,5 @@
 	"sub-setting": "Newsletters",
 	"sub": "Receive Newsletters",
 	"unsub.info": "This newsletter was sent to you due to your subscription settings.",
-  "unsub.override": "This newsletter was sent to you by a forum administrator and does not follow your normal subscription settings."
+	"unsub.override": "This newsletter was sent to you by a forum administrator and does not follow your normal subscription settings."
 }

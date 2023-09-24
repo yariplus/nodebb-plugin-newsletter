@@ -2,5 +2,6 @@
 	"send.as.newsletter": "Enviar como boletín de noticias",
 	"sub-setting": "Boletín de Noticias",
 	"sub": "Suscribirse al boletín de noticias por correo electronico",
-	"unsub.info": "Este boletin de noticias ha sido enviado al estar suscrito en tu perfil."
+	"unsub.info": "Este boletin de noticias ha sido enviado al estar suscrito en tu perfil.",
+	"unsub.override": "Este boletín de noticias te ha sido enviado por un administrador del foro y no sigue tus ajustes de suscripción normales."
 }
