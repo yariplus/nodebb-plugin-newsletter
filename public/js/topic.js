@@ -127,7 +127,7 @@ $('document').ready(function () {
       translate('[[newsletter:send.as.newsletter]]', function (translated) {
         const $container = actionBar.find('.dropdown-menu')
 
-        const item = $('<li><a class="dropdown-item" href="#"><i class="fa fa-fw fa-news"></i> ' + translated + '</a></li>')
+        const item = $('<li><a class="dropdown-item" href="#"><i class="fa fa-fw fa-newspaper-o"></i> ' + translated + '</a></li>')
 
         item.on('click', openNewsletterModal)
 
