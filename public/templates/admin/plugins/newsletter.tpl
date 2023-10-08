@@ -1,3 +1,5 @@
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
 <div class="acp-page-container">
   <!-- IMPORT admin/partials/settings/header.tpl -->
 
@@ -28,14 +30,17 @@
               <button class="btn btn-danger text-nowrap" type="button" data-action="template.delete"><i class="fa fa-fw fa-regular fa-trash-can"></i></button>
             </div>
           </div>
+          <div id="template-editor" class="quill"></div>
         </div>
         <div class="mb-4">
           <h5 class="fw-bold tracking-tight settings-header">History</h5>
 
+          <div>Show History</div>
         </div>
         <div class="mb-4">
           <h5 class="fw-bold tracking-tight settings-header">Send Newsletter</h5>
 
+          <div id="newsletter-editor" class="quill"></div>
         </div>
       </form>
     </div>

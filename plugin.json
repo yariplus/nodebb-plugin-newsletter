@@ -10,13 +10,14 @@
     "public/js/topic.js"
   ],
   "modules": {
-    "../admin/plugins/newsletter.js": "./public/js/acp.js"
+    "../admin/plugins/newsletter.js": "./public/js/acp.js",
+    "quill.js": "./public/js/quill.min.js"
 	},
   "scss": [
     "public/scss/style.scss"
   ],
   "acpScss": [
-    "public/scss/style.scss"
+    "public/scss/acp.scss"
   ],
   "hooks": [
     { "hook": "static:app.load",            "method": "load" },
