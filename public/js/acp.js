@@ -4,8 +4,10 @@
 /* global define, $, app, socket, tinymce, bootbox */
 
 define('admin/plugins/newsletter', [
+  'settings',
+  'alerts',
   'translator',
-  'uploader'
+  'uploader',
 ], (translator, uploader) => {
   const Newsletter = {}
 
@@ -99,26 +101,28 @@ define('admin/plugins/newsletter', [
       if (!err && blacklist) $blacklist.val(blacklist)
     })
 
-    if (tinymce.initialized) {
-      tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'newsletter-body')
-      tinymce.EditorManager.execCommand('mceAddEditor', true, 'newsletter-body')
-      setupPage()
-    } else {
-      tinymce.init({
-        selector: '#newsletter-body',
-        plugins: 'advlist autolink lists link image charmap hr anchor pagebreak searchreplace wordcount visualblocks visualchars code insertdatetime media nonbreaking contextmenu textpattern imagetools autoresize textcolor colorpicker table directionality',
-        relative_urls: false,
-        remove_script_host: false,
-        document_base_url: location.origin + '/',
-        toolbar: 'undo redo | insert | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | ltr rtl | code',
-        menubar: '',
-        autoresize_bottom_margin: 0,
-        autoresize_min_height: 360,
-        resize: false,
-        setup: editor => {
-          editor.on('init', setupPage)
-        }
-      })
+    function initEditor() {
+      if (tinymce.initialized) {
+        tinymce.EditorManager.execCommand('mceRemoveEditor', true, 'newsletter-body')
+        tinymce.EditorManager.execCommand('mceAddEditor', true, 'newsletter-body')
+        setupPage()
+      } else {
+        tinymce.init({
+          selector: '#newsletter-body',
+          plugins: 'advlist autolink lists link image charmap hr anchor pagebreak searchreplace wordcount visualblocks visualchars code insertdatetime media nonbreaking contextmenu textpattern imagetools autoresize textcolor colorpicker table directionality',
+          relative_urls: false,
+          remove_script_host: false,
+          document_base_url: location.origin + '/',
+          toolbar: 'undo redo | insert | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | ltr rtl | code',
+          menubar: '',
+          autoresize_bottom_margin: 0,
+          autoresize_min_height: 360,
+          resize: false,
+          setup: editor => {
+            editor.on('init', setupPage)
+          }
+        })
+      }
     }
   }
 
