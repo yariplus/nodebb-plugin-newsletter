@@ -13,12 +13,12 @@ define('admin/plugins/newsletter', [
   const Newsletter = {}
 
   Newsletter.init = () => {
-    let $newsletter = $('#newsletter')
     let $everyone = $('#checkbox-everyone')
     let $custom = $('#custom-groups')
-    let $blacklist = $('#newsletter-blacklist')
-    let $blacklistCheck = $('#checkbox-blacklist')
-    let $blacklistForm = $('#newsletter-blacklist-form')
+    let $blocklistGlobalText = $('#email-global-blocklist')
+    let $blocklistCheck = $('#use-blocklist')
+    let $blocklistText = $('#email-blocklist')
+    let $blocklistDiv = $('#email-blocklist-div')
 
     // Fade custom groups on page load or 'everyone' toggle.
     function displayCustomGroups () {
@@ -29,12 +29,12 @@ define('admin/plugins/newsletter', [
       }
     }
 
-    // Fade blacklist on option toggle.
-    function displayBlacklist () {
-      if ($blacklistCheck[0].checked) {
-        $blacklistForm.fadeIn()
+    // Fade blocklist on option toggle.
+    function displayBlocklist () {
+      if ($blocklistCheck[0].checked) {
+        $blocklistDiv.fadeIn()
       } else {
-        $blacklistForm.fadeOut()
+        $blocklistDiv.fadeOut()
       }
     }
 
@@ -53,14 +53,14 @@ define('admin/plugins/newsletter', [
 
     // Display options on page load.
     function displayOptions () {
-      if ($blacklistCheck[0].checked) $blacklistForm.show()
-      if ($everyone[0].checked) $custom.hide()
+      if ($blocklistCheck[0].checked) $blocklistDiv.show()
+      //if ($everyone[0].checked) $custom.hide()
     }
 
     // Fade in page on load.
     function setupPage () {
       displayOptions()
-      $newsletter.fadeIn()
+      //$newsletter.fadeIn()
     }
 
     $('#newsletter-send').click(() => {
@@ -71,7 +71,7 @@ define('admin/plugins/newsletter', [
         let body = tinymce.activeEditor.getContent()
         let groups = getSelectedGroups()
         let override = $('#checkbox-override')[0].checked
-        let blacklist = $blacklistCheck[0].checked ? $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
+        let blocklist = $blocklistCheck[0].checked ? $blocklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
         let prefixTitle = $('#checkbox-prefix-title')[0].checked
 
         if (!groups.length) return app.alertError(new Error('No groups selected.'))
@@ -81,7 +81,7 @@ define('admin/plugins/newsletter', [
           body,
           groups,
           override,
-          blacklist,
+          blocklist,
           prefixTitle,
         }, err => {
           if (err) {
@@ -93,12 +93,9 @@ define('admin/plugins/newsletter', [
       })
     })
 
-    $everyone.on('change', displayCustomGroups)
-    $blacklistCheck.on('change', displayBlacklist)
-
-    // Load saved blacklist.
-    socket.emit('admin.Newsletter.getBlacklist', {}, (err, blacklist) => {
-      if (!err && blacklist) $blacklist.val(blacklist)
+    // Load saved blocklist.
+    socket.emit('admin.Newsletter.getBlocklist', {}, (err, blocklist) => {
+      if (!err && blocklist) $blocklist.val(blocklist)
     })
 
     let templateEditor = new quill('#template-editor', {
@@ -108,6 +105,10 @@ define('admin/plugins/newsletter', [
     let newletterEditor = new quill('#newsletter-editor', {
       theme: 'snow'
     })
+
+    $everyone.on('change', displayCustomGroups)
+    $blocklistCheck.on('change', displayBlocklist)
+    setupPage()
   }
 
   return Newsletter

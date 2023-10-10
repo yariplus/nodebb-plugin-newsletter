@@ -10,8 +10,8 @@
           <h5 class="fw-bold tracking-tight settings-header">Global Settings</h5>
 
           <div class="mb-3">
-            <label class="form-label" for="emailBlocklistGlobal">Global Email Blocklist</label>
-            <textarea class="form-control" id="emailBlocklistGlobal" name="emailBlocklistGlobal" placeholder="user@example.com, user2@example.com"></textarea>
+            <label class="form-label" for="email-global-blocklist">Global Email Blocklist</label>
+            <textarea class="form-control blocklist" id="email-global-blocklist" name="email-global-blocklist" placeholder="user@example.com, user2@example.com"></textarea>
             <p class="form-text">
               List of emails to omit from all newsletters. Comma and newline seperated.
             </p>
@@ -41,6 +41,20 @@
           <h5 class="fw-bold tracking-tight settings-header">Send Newsletter</h5>
 
           <div id="newsletter-editor" class="quill"></div>
+
+          <div class="mb-3 form-check form-switch">
+						<input type="checkbox" class="form-check-input" name="use-blocklist" id="use-blocklist">
+						<label class="form-check-label" for="use-blocklist">
+							Use Blocklist
+						</label>
+					</div>
+          <div class="mb-3" id="email-blocklist-div">
+            <label class="form-label" for="email-blocklist">Email Blocklist</label>
+            <textarea class="form-control blocklist" id="email-blocklist" name="email-blocklist" placeholder="user@example.com, user2@example.com"></textarea>
+            <p class="form-text">
+              List of emails to omit from this newsletter. Comma and newline seperated.
+            </p>
+          </div>
         </div>
       </form>
     </div>
