@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-newsletter",
-  "version": "0.11.2",
+  "version": "0.12.0",
   "description": "Send an email newsletter to all users or a group of users.",
   "main": "lib/index.js",
   "repository": {
@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/yariplus/nodebb-plugin-newsletter",
   "nbbpm": {
-    "compatibility": "^3.0.0"
+    "compatibility": "^4.0.0"
   },
   "standard": {
     "ignore": [
