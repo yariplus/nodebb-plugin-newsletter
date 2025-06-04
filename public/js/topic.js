@@ -60,14 +60,14 @@ $('document').ready(function () {
               callback: async () => {
                 let groups = getSelectedGroups()
                 let override = $('#checkbox-override')[0].checked
-                let blacklist = $blacklistCheck[0].checked ? $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
+                let blocklist = $blacklistCheck[0].checked ? $blacklist.val().split(/[\n, ]+/).filter(e => e).map(e => e.trim()) : []
 
                 if (!groups.length) {
                   alertType('error', new Error('No groups selected.'))
                   return false
                 }
 
-                await socket.emit('admin.Newsletter.send', {subject: title, body, groups, override, blacklist})
+                await socket.emit('admin.Newsletter.send', {subject: title, body, groups, override, blocklist})
                 // TODO: return info
 
                 alertType('success', 'Newsletter Sent')
