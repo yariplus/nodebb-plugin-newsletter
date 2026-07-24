@@ -5,10 +5,9 @@
 /* eslint-disable no-useless-escape */
 
 $('document').ready(function () {
-  function translate(text, cb) {
-    require(['translator'], function (translator) {
-      translator.translate(text, cb)
-    })
+  async function translate(text) {
+    let translator = await import('translator')
+    return translator.translate(text)
   }
   function alertType(type, message) {
     require(['alerts'], function (alerts) {
@@ -36,7 +35,8 @@ $('document').ready(function () {
       const $composer = $('.composer[data-uuid="' + data.post_uuid + '"]')
       const groups = await socket.emit('admin.Newsletter.getGroups')
 
-      let title = $composer.find('.title').val() || 'Newsletter Subject'
+      let title = 'Send as Newsletter'
+      let subject = $composer.find('.title').val() || 'Newsletter Subject'
       let textarea = $composer.find('textarea');
       let body = await socket.emit('plugins.composer.renderPreview', textarea.val())
 
@@ -48,7 +48,8 @@ $('document').ready(function () {
       body = body.replace(new RegExp(`(src="${config.relative_path})(\/)`, 'gi'), `$1${origin}$2`)
 
       require(['benchpress', 'bootbox'], async (benchpress, bootbox) => {
-        const message = await benchpress.render('partials/newsletter-modal', {body, groups})
+        let message = await benchpress.render('partials/newsletter-modal', {subject, body, groups})
+        message = await translate(message)
 
         bootbox.dialog({
           title,
@@ -68,7 +69,7 @@ $('document').ready(function () {
                   return false
                 }
 
-                await socket.emit('admin.Newsletter.send', {subject: title, body, groups, override, blocklist})
+                await socket.emit('admin.Newsletter.send', {subject, body, groups, override, blocklist})
                 // TODO: return info
 
                 alertType('success', 'Newsletter Sent')
@@ -124,16 +125,15 @@ $('document').ready(function () {
       })
     }
 
-    function addNewsletterDropdown(actionBar) {
-      translate('[[newsletter:send.as.newsletter]]', function (translated) {
-        const $container = actionBar.find('.dropdown-menu')
+    async function addNewsletterDropdown(actionBar) {
+      let translated = await translate('[[newsletter:send.as.newsletter]]')
 
-        const item = $('<li><a class="dropdown-item" href="#"><i class="fa fa-fw fa-newspaper-o"></i> ' + translated + '</a></li>')
+      let $container = actionBar.find('.dropdown-menu')
+      let item = $('<li><a class="dropdown-item" href="#"><i class="fa fa-fw fa-newspaper-o"></i> ' + translated + '</a></li>')
 
-        item.on('click', openNewsletterModal)
+      item.on('click', openNewsletterModal)
 
-        $container.append(item)
-      })
+      $container.append(item)
     }
   })
 })
