@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-newsletter",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "Send an email newsletter to all users or a group of users.",
   "main": "lib/index.js",
   "repository": {
