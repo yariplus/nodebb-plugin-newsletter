@@ -1,6 +1,4 @@
 <h1 align="center">
-  <a href="https://community.nodebb.org/topic/4481"><img src="http://puu.sh/pcIZI/600b1c04a9.svg" height="200" with="200"></a>
-  <br>
   NodeBB Plugin Newsletter
   <br>
 </h1>
@@ -22,22 +20,16 @@ The newsletter plugin allows <a href="https://nodebb.org/">NodeBB</a> forum admi
 </p>
 
 <p>
-The plugin uses a WYSIWYG editor <a href="https://www.tinymce.com/">tinyMCE</a> located within the admin panel plugins menu.
+The plugin uses the new topic composer to design newsletters. A "Send as Newsletter" option will be added to the Submit menu of new topics.
 </p>
-
-<img src="http://puu.sh/wnMSP/1c8fff6cee.png">
 
 <p>
 Newsletters can be sent to multiple user groups. Options are also given for subscription overrides and blacklists.
 </p>
 
-<img src="http://puu.sh/wnN3T/fafdb818ef.png">
-
 <p>
 Users can unsubscribe from newsletters via the user settings menu. New users will automatically receive newsletters.
 </p>
-
-<img src="http://puu.sh/wnN6h/8bb0688a4e.png">
 
 <p>
 </p>
