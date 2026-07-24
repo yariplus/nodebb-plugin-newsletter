@@ -37,7 +37,8 @@ $('document').ready(function () {
       const groups = await socket.emit('admin.Newsletter.getGroups')
 
       let title = $composer.find('.title').val() || 'Newsletter Subject'
-      let body = $composer.find('.preview').html() || 'Newsletter Body'
+      let textarea = $composer.find('textarea');
+      let body = await socket.emit('plugins.composer.renderPreview', textarea.val())
 
       // Append the full path to uploaded images/files.
       let port = window.location.port ? `:${window.location.port}` : ''
