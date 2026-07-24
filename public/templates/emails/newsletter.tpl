@@ -1,4 +1,4 @@
-{body}
+{{body}}
 
 <p>
 	[[email:closing]]<br />
