@@ -120,6 +120,11 @@ $('document').ready(function () {
           return groups
         }
 
+        // Load saved blacklist.
+        socket.emit('admin.Newsletter.getBlacklist', {}, (err, blacklist) => {
+          if (!err && blacklist) $blacklist.val(blacklist)
+        })
+
         $everyone.on('change', displayCustomGroups)
         $blacklistCheck.on('change', displayBlacklist)
       })
